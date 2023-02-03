@@ -1,9 +1,9 @@
 [book]
-authors = ["Lukas Wirth"]
-language = "en"
+authors = ["jiftechnify"]
+language = "ja"
 multilingual = false
 src = "src"
-title = "The Little Book of Rust Macros"
+title = "Rustマクロの薄い本"
 edition = "2018"
 
 [build]
@@ -16,9 +16,9 @@ optional = true
 
 [output.html]
 default-theme = "ayu"
-site-url = "/tlborm/"
+site-url = "/tlborm-ja/"
 mathjax-support = true
-git-repository-url = "https://github.com/veykril/tlborm/"
+git-repository-url = "https://github.com/jiftechnify/tlborm-ja"
 additional-css = ["res/rust-syntax-bg-highlight.css"]
 
 [output.html.fold]
