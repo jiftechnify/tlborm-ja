@@ -16,4 +16,4 @@ To do that, we must first discuss how Rust source is processed by the compiler, 
 <!--
 > **Note**: This book will use the term *syntax extension* from now on when talking about all of rust's different macro kinds in general to reduce potential confusion with the upcoming [declarative macro 2.0](https://github.com/rust-lang/rust/issues/39412) proposal which uses the `macro` keyword.
 -->
-> **Note**: 本書では以後、*構文拡張* (syntax extension) という用語をすべての種類のRustのマクロを総称して語る際に用います。これは、今後導入されるであろう、`macro`キーワードを用いる[宣言的マクロ2.0](https://github.com/rust-lang/rust/issues/39412)の提案に伴って生じうる混乱を軽減するためです。
+> **Note**: 本書では以後、*構文拡張* (syntax extension) という用語をすべての種類のRustマクロに通ずる一般論を語る際に用います。これは、今後導入されるであろう、`macro`キーワードを用いる[宣言的マクロ2.0](https://github.com/rust-lang/rust/issues/39412)の提案に伴って生じうる混乱を軽減するためです。
