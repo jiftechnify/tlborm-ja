@@ -25,7 +25,7 @@ It is called this way due to its resemblance of a function call.
 <!--
 ## Syntax Extension
 -->
-## 構文拡張(Syntax Extension)
+## 構文拡張 (Syntax Extension)
 
 <!--
 The mechanism Rust's `macro_rules!` and procedural macros are built on.
