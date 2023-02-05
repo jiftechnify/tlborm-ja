@@ -1,8 +1,8 @@
 # Summary
 
-[Introduction](./introduction.md)
+[はじめに](./introduction.md)
 
-- [Syntax Extensions](./syntax-extensions.md)
+- [構文拡張](./syntax-extensions.md)
     - [Source Analysis](./syntax-extensions/source-analysis.md)
     - [Macros in the Ast](./syntax-extensions/ast.md)
     - [Expansion](./syntax-extensions/expansion.md)
@@ -47,4 +47,4 @@
     - [Techniques]()<!-- ./proc-macros/techniques.md -->
         - [Testing]()<!-- ./proc-macros/techniques/testing.md -->
 
- [Glossary](./glossary.md)
+ [用語集](./glossary.md)
