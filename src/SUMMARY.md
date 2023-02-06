@@ -3,7 +3,7 @@
 [はじめに](./introduction.md)
 
 - [構文拡張](./syntax-extensions.md)
-    - [Source Analysis](./syntax-extensions/source-analysis.md)
+    - [ソースコード解析](./syntax-extensions/source-analysis.md)
     - [Macros in the Ast](./syntax-extensions/ast.md)
     - [Expansion](./syntax-extensions/expansion.md)
     - [Hygiene](./syntax-extensions/hygiene.md)
