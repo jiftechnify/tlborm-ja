@@ -4,7 +4,7 @@
 
 - [構文拡張](./syntax-extensions.md)
     - [ソースコード解析](./syntax-extensions/source-analysis.md)
-    - [Macros in the Ast](./syntax-extensions/ast.md)
+    - [ASTにおけるマクロ](./syntax-extensions/ast.md)
     - [Expansion](./syntax-extensions/expansion.md)
     - [Hygiene](./syntax-extensions/hygiene.md)
     - [Debugging](./syntax-extensions/debugging.md)

@@ -1,28 +1,54 @@
+<!--
 # Macros in the AST
+-->
+# ASTにおけるマクロ
 
+<!--
 As previously mentioned, macro processing in Rust happens *after* the construction of the AST.
 As such, the syntax used to invoke a macro *must* be a proper part of the language's syntax.
 In fact, there are several "syntax extension" forms which are part of Rust's syntax.
 Specifically, the following 4 forms (by way of examples):
+-->
 
-1. `# [ $arg ]`; *e.g.* `#[derive(Clone)]`, `#[no_mangle]`, …
-2. `# ! [ $arg ]`; *e.g.* `#![allow(dead_code)]`, `#![crate_name="blang"]`, …
-3. `$name ! $arg`; *e.g.* `println!("Hi!")`, `concat!("a", "b")`, …
-4. `$name ! $arg0 $arg1`; *e.g.* `macro_rules! dummy { () => {}; }`.
+先述した通り、Rustにおいてマクロの処理は抽象構文木が構築された後に行われます。
+よって、マクロを呼び出すのに使う構文は言語の構文上正しいものでなければなりません。
+実際、いくつかの「構文拡張」の形式がRustの構文に組み込まれています。
+特に、(例として)以下の4つの形式があります:
 
+1. `# [ $arg ]` *例:* `#[derive(Clone)]`, `#[no_mangle]`, …
+2. `# ! [ $arg ]` *例:* `#![allow(dead_code)]`, `#![crate_name="blang"]`, …
+3. `$name ! $arg` *例:* `println!("Hi!")`, `concat!("a", "b")`, …
+4. `name ! $arg0 $arg1` *例:* `macro_rules! dummy { () => {}; }`
+
+<!--
 The first two are [attributes] which annotate items, expressions and statements. They can be
 classified into different kinds, [built-in attributes], [proc-macro attributes] and [derive attributes].
 [proc-macro attributes] and [derive attributes] can be implemented with the second macro system that Rust
 offers, [procedural macros]. [built-in attributes] on the other hand are attributes implemented by
 the compiler.
+-->
 
+最初の2つは[属性]で、アイテム、式、文にアノテーションをつけるものです。
+属性は[組み込み属性]、[proc-macro属性]、[derive属性]に分類できます。
+[proc-macro属性]と[derive属性]はRustが提供する第二のマクロシステムである[手続き的マクロ]によって実装できます。
+一方、[組み込み属性]はコンパイラが実装している属性です。
+
+<!--
 The third form `$name ! $arg` are function-like macros. It is the form available for use with `macro_rules!`, `macro` and also procedural macros.
 Note that this form is not *limited* to `macro_rules!` macros: it is a generic syntax extension form.
 For example, whilst [`format!`] is a `macro_rules!` macro, [`format_args!`] (which is used to *implement* [`format!`]) is *not* as it is a compiler builtin.
+-->
 
+3つめの形式 `$name ! $arg` は関数形式マクロです。これは`macro_rules!`によるマクロ、`macro`によるマクロ、そして手続き的マクロを呼び出すのに使えます。
+`macro_rules!`で定義されたマクロだけに限定されているわけではないことに注意してください: これは全般的な構文拡張の形式なのです。
+例えば、[`format!`]は`macro_rules!`によるマクロですが、([`format!`]の実装に用いられている)[`format_args!`]はコンパイラ組み込みのマクロです。
 
+<!--
 The fourth form is essentially a variation which is *not* available to macros.
 In fact, the only case where this form is used *at all* is with the `macro_rules!` construct itself.
+-->
+4つめの形式は原則としてマクロに対して使える形式ではありません。
+実際、この形式は`macro_rules!`構文そのものに対してしか用いられません。
 
 So, starting with the third form, how does the Rust parser know what the `$arg` in (`$name ! $arg`) looks like for every possible syntax extension?
 The answer is that it doesn't *have to*.
@@ -114,10 +140,25 @@ Some things *not* on this list:
 
 There is absolutely, definitely *no way* to use syntax extensions in any position *not* on the first list.
 
+<!--
 [attributes]: https://doc.rust-lang.org/reference/attributes.html
+-->
+[属性]: https://doc.rust-lang.org/reference/attributes.html
+<!--
 [built-in attributes]: https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index
+-->
+[組み込み属性]: https://doc.rust-lang.org/reference/attributes.html#built-in-attributes-index
+<!--
 [proc-macro attributes]: https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros
+-->
+[proc-macro属性]: https://doc.rust-lang.org/reference/procedural-macros.html#attribute-macros
+<!--
 [derive attributes]: https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes
+-->
+[derive属性]: https://doc.rust-lang.org/reference/procedural-macros.html#derive-macro-helper-attributes
+<!--
 [procedural macros]: https://doc.rust-lang.org/reference/procedural-macros.html
+-->
+[手続き的マクロ]: https://doc.rust-lang.org/reference/procedural-macros.html
 [`format!`]: https://doc.rust-lang.org/std/macro.format.html
 [`format_args!`]: https://doc.rust-lang.org/std/macro.format_args.html
