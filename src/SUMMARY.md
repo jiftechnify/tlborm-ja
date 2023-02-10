@@ -6,7 +6,7 @@
     - [ソースコード解析](./syntax-extensions/source-analysis.md)
     - [ASTにおけるマクロ](./syntax-extensions/ast.md)
     - [展開](./syntax-extensions/expansion.md)
-    - [Hygiene](./syntax-extensions/hygiene.md)
+    - [衛生性](./syntax-extensions/hygiene.md)
     - [Debugging](./syntax-extensions/debugging.md)
 - [Declarative Macros](./decl-macros.md)
     - [A Methodical Introduction](./decl-macros/macros-methodical.md)
