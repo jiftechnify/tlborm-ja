@@ -7,7 +7,7 @@
     - [ASTにおけるマクロ](./syntax-extensions/ast.md)
     - [展開](./syntax-extensions/expansion.md)
     - [衛生性](./syntax-extensions/hygiene.md)
-    - [Debugging](./syntax-extensions/debugging.md)
+    - [デバッグ](./syntax-extensions/debugging.md)
 - [Declarative Macros](./decl-macros.md)
     - [A Methodical Introduction](./decl-macros/macros-methodical.md)
     - [A Practical Introduction](./decl-macros/macros-practical.md)
