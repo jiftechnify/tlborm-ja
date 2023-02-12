@@ -8,7 +8,7 @@
     - [展開](./syntax-extensions/expansion.md)
     - [衛生性](./syntax-extensions/hygiene.md)
     - [デバッグ](./syntax-extensions/debugging.md)
-- [Declarative Macros](./decl-macros.md)
+- [宣言的マクロ](./decl-macros.md)
     - [A Methodical Introduction](./decl-macros/macros-methodical.md)
     - [A Practical Introduction](./decl-macros/macros-practical.md)
     - [Minutiae](./decl-macros/minutiae.md)
