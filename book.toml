@@ -1,0 +1,51 @@
+[book]
+authors = ["Lukas Wirth"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The Little Book of Rust Macros"
+edition = "2018"
+
+[build]
+create-missing = true
+build-dir = "book"
+
+[output.linkcheck]
+traverse-parent-directories = false
+optional = true
+
+[output.html]
+default-theme = "ayu"
+site-url = "/tlborm/"
+mathjax-support = true
+git-repository-url = "https://github.com/veykril/tlborm/"
+additional-css = ["res/rust-syntax-bg-highlight.css"]
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.redirect]
+"/building-blocks/abacus-counting.html" = "../decl-macros/building-blocks/abacus-counting.html"
+"/building-blocks/ast-coercion.html" = "../decl-macros/building-blocks/ast-coercion.html"
+"/building-blocks/counting.html" = "../decl-macros/building-blocks/counting.html"
+"/building-blocks/parsing.html" = "../decl-macros/building-blocks/parsing.html"
+
+"/macros-practical.html" = "./decl-macros/macros-practical.html"
+"/patterns.html" = "./decl-macros/patterns.html"
+"/building-blocks.html" = "./decl-macros/building-blocks.html"
+
+"/patterns/callbacks.html" = "../decl-macros/patterns/callbacks.html"
+"/patterns/internal-rules.html" = "../decl-macros/patterns/internal-rules.html"
+"/patterns/push-down-acc.html" = "../decl-macros/patterns/push-down-acc.html"
+"/patterns/repetition-placement.html" = "../decl-macros/patterns/repetition-placement.html"
+"/patterns/tt-bundling.html" = "../decl-macros/patterns/tt-bundling.html"
+"/patterns/tt-muncher.html" = "../decl-macros/patterns/tt-muncher.html"
+
+"/decl-macros/syntax/ast.html" = "../../syntax-extensions/ast.html"
+"/decl-macros/syntax/expansion.html" = "../../syntax-extensions/expansion.html"
+"/decl-macros/syntax/source-analysis.html" = "../../syntax-extensions/source-analysis.html"
+
+[rust]
+# see: https://rust-lang.github.io/mdBook/format/configuration/general.html#rust-options
+edition = "2021"
