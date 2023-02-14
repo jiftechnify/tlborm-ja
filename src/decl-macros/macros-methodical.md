@@ -1,16 +1,27 @@
+<!--
 # Macros, A Methodical Introduction
+-->
+# マクロ: 体系的説明
 
+<!--
 This chapter will introduce Rust's declarative [Macro-By-Example][mbe] system by explaining the system as a whole.
 It will do so by first going into the construct's syntax and its key parts and then following it up with more general information that one should at least be aware of.
+-->
+本章ではRustの宣言的な[Macros-By-Example][mbe]のシステムについて、全体の概略を説明することによって紹介していきます。
+まず構成要素の文法と鍵となるパーツについて説明したあと、最低限知っておくべきより全般的な情報を補足します。
 
 [mbe]: https://doc.rust-lang.org/reference/macros-by-example.html
 [Macros chapter of the Rust Book]: https://doc.rust-lang.org/book/ch19-06-macros.html
 
 # `macro_rules!`
 
+<!--
 With all that in mind, we can introduce `macro_rules!` itself.
 As noted previously, `macro_rules!` is *itself* a syntax extension, meaning it is *technically* not part of the Rust syntax.
 It uses the following forms:
+-->
+以上のことを念頭に置いて、`macro_rules!`自体の説明に入ります。
+先述したとおり、`macro_rules!`は*それ自体*が構文拡張のひとつであり、これは`macro_rules!`が*技術的には*Rustの文法に含まれないということを意味します。
 
 ```rust,ignore
 macro_rules! $name {
@@ -21,24 +32,43 @@ macro_rules! $name {
 }
 ```
 
+<!--
 There must be *at least* one rule, and you can omit the semicolon after the last rule.
 You can use brackets(`[]`), parentheses(`()`) or braces(`{}`).
+-->
+少なくとも1つのルールが必要で、最後のルールの後ろのセミコロンは省略できます。
+かっこは、角かっこ(`[]`)、丸かっこ(`()`)、波かっこ(`{}`)のどれを使ってもかまいません。
 
+<!--
 Each *"rule"* looks like the following:
+-->
+それぞれの「ルール」は次のような見た目になります:
 
 ```ignore
-    ($matcher) => {$expansion}
+    ($マッチパターン) => {$展開形}
 ```
 
+<!--
 Like before, the types of parentheses used can be any kind, but parentheses around the matcher and braces around the expansion are somewhat conventional.
 The expansion part of a rule is also called its *transcriber*.
+-->
+先程と同様かっこの種類はどれでも構いませんが、マッチパターンは丸かっこで、展開形は波かっこで囲む慣習があります。
 
+<!--
 Note that the choice of the parentheses does not matter in regards to how the mbe macro may be invoked.
 In fact, function-like macros can be invoked with any kind of parentheses as well, but invocations with `{ .. }` and `( ... );`, notice the trailing semicolon, are special in that their expansion will *always* be parsed as an *item*.
+-->
+ここでどのかっこを選ぶかは、MBEマクロの呼び出し方には影響しないということを指摘しておきます。
+実際のところ、関数形式マクロはどの種類のかっこを使っても呼び出せます。ただし、`{ .. }`や`( ... );`(末尾のセミコロンに注意)という形の呼び出しは、*常にアイテム*としてパースされるという点で特別です。
 
+<!--
 If you are wondering, the `macro_rules!` invocation expands to... *nothing*.
 At least, nothing that appears in the AST; rather, it manipulates compiler-internal structures to register the mbe macro.
 As such, you can *technically* use `macro_rules!` in any position where an empty expansion is valid.
+-->
+不思議に思われるかもしれませんが、`macro_rules!`の呼び出しが何に展開されるかというと… *何にも*展開されません。
+少なくとも、抽象構文木には何の変化も起きません。むしろ、その呼び出しはMBEマクロを登録するためにコンパイラ内部のデータ構造を操作します。
+そういうわけで、*技術的には* `macro_rules!`は空の展開が許される全ての場所で利用できます。
 
 ## Matching
 

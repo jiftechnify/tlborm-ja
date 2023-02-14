@@ -9,7 +9,7 @@
     - [衛生性](./syntax-extensions/hygiene.md)
     - [デバッグ](./syntax-extensions/debugging.md)
 - [宣言的マクロ](./decl-macros.md)
-    - [A Methodical Introduction](./decl-macros/macros-methodical.md)
+    - [体系的説明](./decl-macros/macros-methodical.md)
     - [A Practical Introduction](./decl-macros/macros-practical.md)
     - [Minutiae](./decl-macros/minutiae.md)
         - [Fragment Specifiers](./decl-macros/minutiae/fragment-specifiers.md)
