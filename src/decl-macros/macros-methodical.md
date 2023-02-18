@@ -7,7 +7,7 @@
 This chapter will introduce Rust's declarative [Macro-By-Example][mbe] system by explaining the system as a whole.
 It will do so by first going into the construct's syntax and its key parts and then following it up with more general information that one should at least be aware of.
 -->
-本章ではRustの宣言的な[Macros-By-Example][mbe]のシステムについて、全体の概略を説明することによって紹介していきます。
+本章ではRustの宣言的な[Macro-By-Example][mbe]のシステムについて、全体の概略を説明することによって紹介していきます。
 まず構成要素の文法と鍵となるパーツについて説明したあと、最低限知っておくべきより全般的な情報を補足します。
 
 [mbe]: https://doc.rust-lang.org/reference/macros-by-example.html

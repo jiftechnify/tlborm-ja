@@ -10,7 +10,7 @@
     - [デバッグ](./syntax-extensions/debugging.md)
 - [宣言的マクロ](./decl-macros.md)
     - [体系的説明](./decl-macros/macros-methodical.md)
-    - [A Practical Introduction](./decl-macros/macros-practical.md)
+    - [実践的説明](./decl-macros/macros-practical.md)
     - [枝葉末節](./decl-macros/minutiae.md)
         - [Fragment Specifiers](./decl-macros/minutiae/fragment-specifiers.md)
         - [Metavariables and Expansion Redux](./decl-macros/minutiae/metavar-and-expansion.md)

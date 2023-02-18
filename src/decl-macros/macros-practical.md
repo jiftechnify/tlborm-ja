@@ -1,47 +1,98 @@
+<!--
 # Macros, A Practical Introduction
+-->
+# マクロ: 実践的説明
 
+<!--
 This chapter will introduce Rust's declarative [Macro-By-Example](https://doc.rust-lang.org/reference/macros-by-example.html) system using a relatively simple, practical example.
 It does *not* attempt to explain all of the intricacies of the system; its goal is to get you comfortable with how and why macros are written.
+-->
+本章では、Rustの宣言的な[Macro-By-Example](https://doc.rust-lang.org/reference/macros-by-example.html)のシステムについて、比較的シンプルで実践的な例を通して説明していきます。
 
+<!--
 There is also the [Macros chapter of the Rust Book](https://doc.rust-lang.org/book/ch19-06-macros.html) which is another high-level explanation, and the [methodical introduction](../decl-macros.md) chapter of this book, which explains the macro system in detail.
+-->
+高水準な視点からの説明としては、他にも[The Rust Bookのマクロの章](https://doc.rust-lang.org/book/ch19-06-macros.html)があります。
+また本書の[形式的説明](../decl-macros.md)の章では、このマクロシステムについて詳細に説明しています。
 
+<!--
 ## A Little Context
+-->
+## 背景を少し
 
+<!--
 > **Note**: don't panic! What follows is the only math that will be talked about.
 > You can quite safely skip this section if you just want to get to the meat of the article.
+-->
 
+> **Note**: 落ち着いて！ これに続くのはマクロの説明に関係するちょっとした数学の話です。
+> 早くこの章の本題に入りたいのであれば、この節を飛ばして読んでも大丈夫です。
+
+<!--
 If you aren't familiar, a recurrence relation is a sequence where each value is defined in terms of one or more *previous* values, with one or more initial values to get the whole thing started.
 For example, the [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_number) can be defined by the relation:
+-->
+詳しくない方向けに説明すると、漸化式とは、各値が1つ以上*前の*値に基づいて定まる数列で、全ての始まりである1つ以上の初期値を伴います。
+例えば、[フィボナッチ数列](https://en.wikipedia.org/wiki/Fibonacci_number)[^fib-wikipedia-ja]は次の漸化式により定義されます:
 
 \\[F_{n} = 0, 1, ..., F_{n-2} + F_{n-1}\\]
 
-Thus, the first two numbers in the sequence are 0 and 1, with the third being \\( F_{0} + F_{1} = 0 + 1 = 1\\), the fourth \\( F_{1} + F_{2} = 1 + 1 = 2\\), and so on forever.
+[^fib-wikipedia-ja]: *訳注*: 日本語版は[こちら](https://en.wikipedia.org/wiki/Fibonacci_number)。
 
+<!--
+Thus, the first two numbers in the sequence are 0 and 1, with the third being \\( F_{0} + F_{1} = 0 + 1 = 1\\), the fourth \\( F_{1} + F_{2} = 1 + 1 = 2\\), and so on forever.
+-->
+したがって、数列の最初の2つの数は 0 と 1、3番めは \\( F_{0} + F_{1} = 0 + 1 = 1\\)、 4番めは \\( F_{1} + F_{2} = 1 + 1 = 2\\)、という具合に無限に続きます。
+
+<!--
 Now, *because* such a sequence can go on forever, that makes defining a `fibonacci` function a little tricky, since you obviously don't want to try returning a complete vector.
 What you *want* is to return something which will lazily compute elements of the sequence as needed.
+-->
+さて、このような数列は無限に続く*ため*、`fibonacci` 関数を定義するのは少しややこしい作業になります。というのも、明らかに完全なベクタを返すべきではないからです。
+ここで*すべき*ことは、必要に応じて数列の要素を遅延的に計算する何かを返すことです。
 
+<!--
 In Rust, that means producing an [`Iterator`].
 This is not especially *hard*, but there is a fair amount of boilerplate involved: you need to define a custom type, work out what state needs to be stored in it, then implement the [`Iterator`] trait for it.
+-->
+Rustにおいて、これは[`Iterator`]を生成せよ、ということです。
+これは特別難しいことではありませんが、かなりの量のボイラープレートを必要とします。独自の型を定義し、その型に保存すべき状態を考え出し、[`Iterator`]トレイトを実装する必要があります。
 
+<!--
 However, recurrence relations are simple enough that almost all of these details can be abstracted out with a little `macro_rules!` macro-based code generation.
+-->
+ですが、小さな`macro_rules!`マクロに基づくコード生成だけでこれらの詳細のほとんどを括りだすことができるくらい、漸化式はシンプルです。
 
+<!--
 So, with all that having been said, let's get started.
+-->
+それでは、以上のことを踏まえて、早速始めていきましょう。
 
 [`Iterator`]:https://doc.rust-lang.org/std/iter/trait.Iterator.html
 
+<!--
 ## Construction
+-->
+## 構成要素
 
+<!--
 Usually, when working on a new `macro_rules!` macro, the first thing I do is decide what the invocation should look like.
 In this specific case, my first attempt looked like this:
+-->
+たいてい、新しい `macro_rules!` マクロの実装に取りかかるとき、私が初めにするのはその呼び出し方を決めることです。
+今回のケースでは、最初の試行は次のようなものになりました:
 
 ```rust,ignore
 let fib = recurrence![a[n] = 0, 1, ..., a[n-2] + a[n-1]];
 
 for e in fib.take(10) { println!("{}", e) }
 ```
-
+<!--
 From that, we can take a stab at how the `macro_rules!` macro should be defined, even if we aren't sure of the actual expansion.
 This is useful because if you can't figure out how to parse the input syntax, then *maybe* you need to change it.
+-->
+これをもとに、実際の展開形について確信は持てなくとも、`macro_rules!` マクロがどのように定義されるべきかを考えてみることはできます。
+入力の構文をパースする方法を思いつけないのであれば、構文を変更する必要があるかもしれないということなので、これは有用な考え方です。
 
 ```rust,ignore
 macro_rules! recurrence {
@@ -50,39 +101,74 @@ macro_rules! recurrence {
 # fn main() {}
 ```
 
+<!--
 Assuming you aren't familiar with the syntax, allow me to elucidate.
 This is defining a syntax extension, using the [`macro_rules!`] system, called `recurrence!`.
 This `macro_rules!` macro has a single parsing rule.
 That rule says the input to the invocation must match:
+-->
+この構文は見慣れないものだと思いますので、少し説明させてください。
+これは `recurrence!` という名前の、[`macro_rules!`]のシステムを使った構文拡張の定義になります。
+この `macro_rules!` マクロはただ一つの構文ルールを持っています。
+そのルールは、呼び出しの入力が次のものに一致しなければならないというものです:
 
+<!--
 - the literal token sequence `a` `[` `n` `]` `=`,
 - a [repeating] (the `$( ... )`) sequence, using `,` as a separator, and one or more (`+`) repeats of:
     - a valid *expression* captured into the [metavariable] `inits` (`$inits:expr`)
 - the literal token sequence `,` `...` `,`,
 - a valid *expression* captured into the [metavariable] `recur` (`$recur:expr`).
+-->
+- リテラルトークンの列 `a` `[` `n` `]` `=`
+- `,` を区切りとする、1回以上 (`+`) の妥当な*式*の[繰り返し] (`$( ... )`)。この式は[メタ変数] `inits` に捕捉される (`$inits:expr`)
+- リテラルトークンの列 `,` `...` `,`
+- 妥当な*式*。この式は[メタ変数] `recur` に捕捉される (`$recur:expr`)
 
-[repeating]: ./macros-methodical.md#repetitions
-[metavariable]: ./macros-methodical.md#metavariables
+[繰り返し]: ./macros-methodical.md#repetitions
+[メタ変数]: ./macros-methodical.md#metavariables
 
+<!--
 Finally, the rule says that *if* the input matches this rule, then the invocation should be replaced by the token sequence `/* ... */`.
+-->
+結局、このルールは、*もし*入力がこのルールに一致したら、マクロの呼び出しを `/* ... */` というトークンの列で置き換えよ、ということを表しています。
 
+<!--
 It's worth noting that `inits`, as implied by the name, actually contains *all* the expressions that match in this position, not just the first or last.
 What's more, it captures them *as a sequence* as opposed to, say, irreversibly pasting them all together.
 Also note that you can do "zero or more" with a repetition by using `*` instead of `+` and even optional, "zero or one" with `?`.
+-->
+`inits` は、その名前が示唆するように、最初や最後だけではなく、その位置にある*すべての*式を含むことに注意してください。
+さらにいえば、`inits` は、それらの式を不可逆的にまとめてペーストするような形ではなく、*列として*捕捉します。
+また、`+` の代わりに `*` を使えば「0回以上」の繰り返しを、`?`を使えば「任意」、つまり「0回か1回」の繰り返しを表せます。
 
+<!--
 As an exercise, let's take the proposed input and feed it through the rule, to see how it is processed.
 The "Position" column will show which part of the syntax pattern needs to be matched against next, denoted by a "⌂".
 Note that in some cases, there might be more than one possible "next" element to match against.
 "Input" will contain all of the tokens that have *not* been consumed yet.
 `inits` and `recur` will contain the contents of those bindings.
+-->
+練習として、先に挙げた入力をこのルールに与えてみて、どのように処理されるか見てみましょう。
+「位置」欄では、次に構文パターンのどの部分がマッチングされるかを「 ⌂ 」で示しています。
+ある状況では、マッチング対象となる「次」の要素の候補が複数存在することがあるのに注意してください。
+「入力」欄は、まだ消費されていないトークンです。
+`inits`・`recur` 欄はそれらに捕捉されている内容です。
 
 {{#include macros-practical-table.html}}
 
+<!--
 The key take-away from this is that the macro system will *try* to incrementally match the tokens provided as input to the macro against the provided rules.
 We'll come back to the "try" part.
+-->
+ここで重要なのは、マクロシステムが、入力として与えられたトークンたちを所与のルールに対してインクリメンタルにマッチングを*試みる*ということです。
+「試みる」という部分については後で補足します。
 
+<!--
 Now, let's begin writing the final, fully expanded form.
 For this expansion, I was looking for something like:
+-->
+さて、最後の、完全に展開された形を書きはじめましょう。
+この展開に対しては、次のようなものが求められています:
 
 ```rust,ignore
 let fib = {
@@ -91,13 +177,21 @@ let fib = {
         pos: usize,
     }
 ```
-
+<!--
 This will be the actual iterator type.
 `mem` will be the memo buffer to hold the last few values so the recurrence can be computed.
 `pos` is to keep track of the value of `n`.
+-->
+これは実際のイテレータ型になるべきものです。
+`mem` は漸化式を計算するのに必要となる、直近の数個の値を保持するメモバッファになります。
+`pos` は `n` の値を追跡するための変数です。
 
+<!--
 > **Aside**: I've chosen `u64` as a "sufficiently large" type for the elements of this sequence.
 > Don't worry about how this will work out for *other* sequences; we'll come to it.
+-->
+> **余談**: `u64` は、数列の要素を表すのに「十分大きな」型として選びました。
+> これが*他の*数列に対して上手くいくかを心配する必要はありません。きっと上手くいきますよ。
 
 ```rust,ignore
     impl Iterator for Recurrence {
@@ -110,7 +204,10 @@ This will be the actual iterator type.
                 Some(next_val)
 ```
 
+<!--
 We need a branch to yield the initial values of the sequence; nothing tricky.
+-->
+数列の初期値を生成する分岐が必要です。難しいところはないでしょう。
 
 ```rust,ignore
             } else {
@@ -127,9 +224,14 @@ We need a branch to yield the initial values of the sequence; nothing tricky.
     }
 ```
 
+<!--
 This is a bit harder; we'll come back and look at *how* exactly to define `a`.
 Also, `TODO_shuffle_down_and_append` is another placeholder;
 I want something that places `next_val` on the end of the array, shuffling the rest down by one space, dropping the 0th element.
+-->
+こちらはちょっと難しいです。`a`を厳密にどう定義するかについては、あとで見ていきます。
+`TODO_shuffle_down_and_append` も仮実装になっています。
+ここには、`next_val` を配列の末尾に配置し、残りの要素を1つずつずらし、最初の要素を削除するものが必要です。
 
 ```rust,ignore
 
@@ -139,8 +241,12 @@ I want something that places `next_val` on the end of the array, shuffling the r
 for e in fib.take(10) { println!("{}", e) }
 ```
 
+<!--
 Lastly, return an instance of our new structure, which can then be iterated over.
 To summarize, the complete expansion is:
+-->
+最後に、この新しい構造体のインスタンスを返します。これに対して反復処理を行うことができます。
+まとめると、展開形の全容は以下のようになります:
 
 ```rust,ignore
 let fib = {
@@ -176,12 +282,21 @@ let fib = {
 for e in fib.take(10) { println!("{}", e) }
 ```
 
+<!--
 > **Aside**: Yes, this *does* mean we're defining a different `Recurrence` struct and its implementation for each invocation.
 > Most of this will optimise away in the final binary.
+-->
+> **余談**: そう、これはマクロの呼び出しのたびに別の `Recurrence` 構造体とその実装を定義することを意味します。
+> ほとんどの部分は最終的なバイナリ上では最適化されるでしょう。
 
+<!--
 It's also useful to check your expansion as you're writing it.
 If you see anything in the expansion that needs to vary with the invocation, but *isn't* in the actual accepted syntax of our macro, you should work out where to introduce it.
 In this case, we've added `u64`, but that's not necessarily what the user wants, nor is it in the macro syntax. So let's fix that.
+-->
+展開形を書きながら、それを見直すのも有用です。
+展開形の中に、呼び出しのたびに異なるべき何かがあって、それがマクロが実際に受け入れる構文の中に*ない*のであれば、それをどこに導入するか考える必要があります。
+今回の例では、`u64`を追加しましたが、それはユーザにとってもマクロ構文中にも必ずしも必要なものではありません。修正しましょう。
 
 ```rust
 macro_rules! recurrence {
@@ -196,8 +311,12 @@ for e in fib.take(10) { println!("{}", e) }
 # fn main() {}
 ```
 
+<!--
 Here, I've added a new metavariable: `sty` which should be a type.
+-->
+新たにメタ変数 `sty` を追加しました。これは型にマッチします。
 
+<!--
 > **Aside**: if you're wondering, the bit after the colon in a metavariable can be one of several kinds of syntax matchers.
 > The most common ones are `item`, `expr`, and `ty`.
 > A complete explanation can be found in [Macros, A Methodical Introduction; `macro_rules!` (Matchers)](./macros-methodical.md#metavariables).
@@ -207,6 +326,16 @@ Here, I've added a new metavariable: `sty` which should be a type.
 > those can *only* be followed by one of `=>`, `,`, and `;`.
 >
 > A complete list can be found in [Macros, A Methodical Introduction; Minutiae; Metavariables and Expansion Redux](./minutiae/metavar-and-expansion.md).
+-->
+> **余談**: メタ変数のコロン以降の部分は、マッチする構文の種類を表します。
+> よく使われるのは `item`, `expr`, そして `ty` です。
+> 詳しい説明は [「マクロ: 形式的説明」 の章の 「メタ変数」の項目](./macros-methodical.md#metavariables)をご覧ください。
+>
+> もう一つ知っておくべきことがあります。言語の将来の変化に備える意味で、コンパイラはマッチパターンの種類に応じて、その*あとに*続けられるトークンの種類に制限を設けています。
+> 概して、これは式や文にマッチングさせようとしたときに問題になります。
+> これらのあとに続けられるのは `=>`, `,`, `;` *のみ*となります。
+>
+> 完全なリストは[「枝葉末節」の章の「メタ変数と展開・再考」の節](./minutiae/metavar-and-expansion.md)にあります。
 
 ## Indexing and Shuffling
 
