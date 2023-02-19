@@ -337,13 +337,24 @@ Here, I've added a new metavariable: `sty` which should be a type.
 >
 > 完全なリストは[「枝葉末節」の章の「メタ変数と展開・再考」の節](./minutiae/metavar-and-expansion.md)にあります。
 
+<!--
 ## Indexing and Shuffling
+-->
+## 添字付け (indexing) と入れ替え
 
+<!-->
 I will skim a bit over this part, since it's effectively tangential to the macro-related stuff.
 We want to make it so that the user can access previous values in the sequence by indexing `a`;
 we want it to act as a sliding window keeping the last few (in this case, 2) elements of the sequence.
+-->
+マクロ関連の話からそれるので、ここはさらっと流そうと思います。
+`a` に添字にアクセス機能をつけることで、ユーザが数列の前のほうの値にアクセスできるようにしたいです。
+これは、数列の直近の数個(今回の例では2個)の要素を保持するスライディングウィンドウのように動きます。
 
+<!--
 We can do this pretty easily with a wrapper type:
+-->
+ラッパー型によって、いとも簡単にこれを実現できます:
 
 ```rust,ignore
 struct IndexOffset<'a> {
@@ -367,21 +378,36 @@ impl<'a> Index<usize> for IndexOffset<'a> {
 }
 ```
 
+<!--
 > **Aside**: since lifetimes come up *a lot* with people new to Rust, a quick explanation: `'a` and `'b` are lifetime parameters that are used to track where a reference (*i.e.* a borrowed pointer to some data) is valid.
 > In this case, `IndexOffset` borrows a reference to our iterator's data, so it needs to keep track of how long it's allowed to hold that reference for, using `'a`.
 >
 > `'b` is used because the `Index::index` function (which is how subscript syntax is actually implemented) is *also* parameterized on a lifetime, on account of returning a borrowed reference.
 > `'a` and `'b` are not necessarily the same thing in all cases.
 > The borrow checker will make sure that even though we don't explicitly relate `'a` and `'b` to one another, we don't accidentally violate memory safety.
+-->
+> **余談**: Rust初心者にとっては*多すぎる*数のライフタイムが出てきたので、簡単に説明しましょう。`'a` や  `'b` はライフタイムパラメータといい、参照(何らかのデータを指す借用されたポインタ)が有効な範囲を追跡するのに使われます。
+> 今回、`IndexOffset`は我々のイテレータのデータへの参照を借用しているので、`'a` を用いて `IndexOffset` がその参照をいつまで保持できるかを追跡する必要があります。
+>
+> `'b` が用いられているのは、`Index::index` 関数 (添字記法 (subscript syntax) の実装本体) もまた、借用された参照を返すためにライフタイムによってパラメータ化されているためです。
+> `'a` と `'b'` が常に同じである必要はありません。
+> 借用チェッカーは、我々が明示的に `'a` と `'b` をお互いと関連付けなくても、我々が誤ってメモリ安全性を侵害していないことを確かめてくれます。
 
+<!--
 This changes the definition of `a` to:
+-->
+これにより、`a`の定義は次のように変わります:
 
 ```rust,ignore
 let a = IndexOffset { slice: &self.mem, offset: n };
 ```
 
+<!--
 The only remaining question is what to do about `TODO_shuffle_down_and_append`.
 I wasn't able to find a method in the standard library with exactly the semantics I wanted, but it isn't hard to do by hand.
+-->
+唯一未解決なのは、`TODO_shuffle_down_and_append` をどうすべきかということです。
+標準ライブラリの中にそのものズバリの機能を持つメソッドは見つかりませんでしたが、自分で書くするのは特に難しくありません。
 
 ```rust,ignore
 {
@@ -394,11 +420,20 @@ I wasn't able to find a method in the standard library with exactly the semantic
 }
 ```
 
+<!--
 This swaps the new value into the end of the array, swapping the other elements down one space.
+-->
+これは新しい値を配列の末尾要素と入れ替え、他の要素を1つずつ前に入れ替えていきます。
 
+<!--
 > **Aside**: doing it this way means that this code will work for non-copyable types, as well.
+-->
+> **余談**: このような方法をとることで、このコードはコピーできない型に対しても動作します。
 
+<!--
 The working code thus far now looks like this:
+-->
+現時点における、動くコードは以下のようになります:
 
 ```rust
 macro_rules! recurrence {
@@ -477,14 +512,25 @@ fn main() {
     for e in fib.take(10) { println!("{}", e) }
 }
 ```
-
+<!--
 Note that I've changed the order of the declarations of `n` and `a`, as well as wrapped them(along with the recurrence expression) in a block.
 The reason for the first should be obvious(`n` needs to be defined first so I can use it for `a`).
 The reason for the second is that the borrowed reference `&self.mem` will prevent the swaps later on from happening (you cannot mutate something that is aliased elsewhere). The block ensures that the `&self.mem` borrow expires before then.
+-->
+`n` と `a` の宣言の順序が入れ替わっており、さらにそれらが(漸化式の計算式と一緒に)ブロックで囲まれていることに注意してください。
+前者の理由は明白でしょう(`n` を `a` の初期化で使うため)。
+後者の理由は、参照の借用 `&self.mem` が、その後の入れ替え処理の実行を妨げてしまうためです(別の場所で借用された値を変更することはできません)。
+このブロックにより、`&self.mem` の借用は入れ替え処理よりも前に失効するようになります。
 
+<!--
 Incidentally, the only reason the code that does the `mem` swaps is in a block is to narrow the scope in which `std::mem::swap` is available, for the sake of being tidy.
+-->
+ちなみに、`mem` swap を実行するコードをブロックで囲んでいるのは、コードの整頓の目的で、`std::mem::swap` が使えるスコープを限定するためでしかありません。
 
+<!--
 If we take this code and run it, we get:
+-->
+このコードを実行すると、次の結果が得られます:
 
 ```text
 0
@@ -499,9 +545,14 @@ If we take this code and run it, we get:
 34
 ```
 
+<!--
 Success!
 Now, let's copy & paste this into the macro expansion, and replace the expanded code with an invocation.
 This gives us:
+-->
+成功です！
+さて、これをマクロの展開形の部分にコピー & ペーストして、展開結果のコードをマクロの呼び出しに置き換えてみましょう。
+次のようになります:
 
 ```rust
 macro_rules! recurrence {
@@ -582,8 +633,13 @@ fn main() {
 }
 ```
 
+<!--
 Obviously, we aren't *using* the metavariables yet, but we can change that fairly easily.
 However, if we try to compile this, `rustc` aborts, telling us:
+-->
+明らかに、まだメタ変数を*使っていません*が、メタ変数を使う形に変更するのはとても簡単です。
+しかし、これをコンパイルしようとすると、`rustc`は次のような文句を言って中断します:
+
 
 ```text
 error: local ambiguity: multiple parsing options: built-in NTs expr ('inits') or 1 other option.
@@ -593,12 +649,20 @@ error: local ambiguity: multiple parsing options: built-in NTs expr ('inits') or
    |
 ```
 
+<!--
 Here, we've run into a limitation of the `macro_rules` system.
 The problem is that second comma.
 When it sees it during expansion, `macro_rules` can't decide if it's supposed to parse *another* expression for `inits`, or `...`.
 Sadly, it isn't quite clever enough to realise that `...` isn't a valid expression, so it gives up.
 Theoretically, this *should* work as desired, but currently doesn't.
+-->
+ここで、我々は `macro_rules!`システムの限界に達してしまいました。
+問題となるのは2つめのコンマです。
+展開中にそのコンマを見た段階で、`macro_rules!` は次に `inits` のためのもう一つの式と、`...`  のどちらをパースすべきかを決めることができないのです。
+悲しいことに、`...` が妥当な式ではないと気づけるほど `macro_rules!` システムは賢くないので、諦めてしまいます。
+理論的には、これは思ったとおりに動作*すべき*ですが、現時点ではそうなっていません。
 
+<!--
 > **Aside**: I *did* fib a little about how our rule would be interpreted by the macro system.
 > In general, it *should* work as described, but doesn't in this case.
 > The `macro_rules` machinery, as it stands, has its foibles, and its worthwhile remembering that on occasion, you'll need to contort a little to get it to work.
@@ -614,9 +678,30 @@ Theoretically, this *should* work as desired, but currently doesn't.
 > On the bright side, this is a state of affairs that exactly *no one* is enthusiastic about.
 > The `macro` keyword has already been reserved for a more rigorously-defined future [macro system](https://github.com/rust-lang/rust/issues/39412).
 > Until then, needs must.
+-->
 
+> **余談**: 我々のルールがマクロシステムによってどのように解釈されるかについて、私は少し嘘をつきました。
+> 一般に、それは書いたように動く*べき*ですが、今回のような場合は動きません。
+> 現状、`macro_rules` の機構には弱点があり、うまく動くようにするためには形を少し歪める必要がある、ということを折に触れて思い出すとよいでしょう。
+>
+> 今回の例においては、2つの問題があります。
+> 1つめは、マクロシステムが、多種多様な文法要素(*例*: 式)について、何が構成要素となり、何が構成要素となりえないのかに関する知識を持たないということです。これはパーサの仕事なのです。
+> そのため、マクロシステムは `...` が式になりえないことを知りません。
+> 2つめは、(式のような)複合的な文法要素を捕捉しようとするには、それに100%身を捧げるしかないということです。
+>
+> 言い換えると、マクロシステムはパーサに何らかの入力を式としてパースするよう依頼することができますが、パーサは任意の問題に対して「中断」という形で応える、ということです。
+> 現状、マクロシステムがこれに対処するための唯一の方法は、それが問題になるような状況を禁じることだけです。
+>
+> 明るい面を挙げるとすれば、誰もこの事態について躍起にはなっていないということです。
+> より綿密に定義された、未来の[マクロシステム](https://github.com/rust-lang/rust/issues/39412)のために、`macro` というキーワードがすでに予約されています。
+> これが使えるようになるまでは、やりたくなくてもそうするしかありません。
+
+<!--
 Thankfully, the fix is relatively simple: we remove the comma from the syntax.
 To keep things balanced, we'll remove *both* commas around `...`:
+-->
+ありがたいことに、修正は比較的シンプルに済みます。構文からコンマを取り除くのです。
+バランスを取るために、`...` の*両側*のコンマを取り除きましょう:
 
 ```rust
 macro_rules! recurrence {
@@ -636,10 +721,16 @@ fn main() {
 }
 ```
 
+<!--
 Success! ... or so we thought.
 Turns out this is being rejected by the compiler nowadays, while it was fine back when this was written.
 The reason for this is that the compiler now recognizes the `...` as a token, and as we know we may only use `=>`, `,` or `;` after an expression fragment.
 So unfortunately we are now out of luck as our dreamed up syntax will not work out this way, so let us just choose one that looks the most befitting that we are allowed to use instead, I'd say replacing `,` with `;` works.
+-->
+やったか！？と思いきや…
+以前は問題なかったにもかかわらず、これはコンパイラによって拒否されてしまいます。
+理由は、コンパイラは今 `...` をトークンとして認識するようになり、ご存知のように式フラグメントの後ろでは `=>`, `,` または `;` しか使えないためです。
+よって、残念ながら我々が夢見た構文は動作しません。運は尽きました。代わりに使える中で、最も相応しいものを選びましょう。`,` を `;` に書き換えます。
 
 ```rust
 macro_rules! recurrence {
@@ -659,8 +750,10 @@ fn main() {
 }
 ```
 
+<!--
 Success! But for real this time.
-
+-->
+やりました！今回は本当に成功です。
 
 ### Substitution
 
