@@ -342,12 +342,12 @@ Here, I've added a new metavariable: `sty` which should be a type.
 -->
 ## 添字付け (indexing) と入れ替え
 
-<!-->
+<!--
 I will skim a bit over this part, since it's effectively tangential to the macro-related stuff.
 We want to make it so that the user can access previous values in the sequence by indexing `a`;
 we want it to act as a sliding window keeping the last few (in this case, 2) elements of the sequence.
 -->
-マクロ関連の話からそれるので、ここはさらっと流そうと思います。
+マクロの話からそれることになるので、ここはさらっと流そうと思います。
 `a` に添字にアクセス機能をつけることで、ユーザが数列の前のほうの値にアクセスできるようにしたいです。
 これは、数列の直近の数個(今回の例では2個)の要素を保持するスライディングウィンドウのように動きます。
 
@@ -755,10 +755,17 @@ Success! But for real this time.
 -->
 やりました！今回は本当に成功です。
 
+<!--
 ### Substitution
+-->
+### 置換
 
+<!--
 Substituting something you've captured in a macro is quite simple; you can insert the contents of a metavariable `$sty:ty` by using `$sty`.
 So, let's go through and fix the `u64`s:
+-->
+マクロによって捕捉したものを使って置換を行うのはとても簡単です。メタ変数 `$sty:ty` の中身を `$ty` を使って挿入できます。
+では、`u64` を直していきましょう:
 
 ```rust
 macro_rules! recurrence {
@@ -842,20 +849,34 @@ fn main() {
 }
 ```
 
+<!--
 Let's tackle a harder one: how to turn `inits` into both the array literal `[0, 1]` *and* the array type, `[$sty; 2]`.
 The first one we can do like so:
+-->
+もっと難しいことに挑戦してみましょう。`inits` を配列リテラル `[0, 1]` *と* 配列の型 `[$sty; 2]` の両方に変換するにはどうすればよいでしょう。
+最初にできるのはこんな感じのことです:
 
 ```rust,ignore
             Recurrence { mem: [$($inits),+], pos: 0 }
 //                             ^~~~~~~~~~~ changed
 ```
 
+<!--
 This effectively does the opposite of the capture: repeat `inits` one or more times, separating each with a comma.
 This expands to the expected sequence of tokens: `0, 1`.
+-->
+これは実質的にキャプチャと逆のことをしています。コンマで区切りつつ、`inits`を1回以上繰り返すのです。
+これは期待されているトークン列 `0, 1` に展開されます。
 
+<!--
 Somehow turning `inits` into a literal `2` is a little trickier.
 It turns out that there's no direct way to do this, but we *can* do it by using a second `macro_rules!` macro.
 Let's take this one step at a time.
+-->
+`inits` を リテラル `2` にするのは少し大変そうです。
+結局のところこれを直接行う方法はないのですが、もう一つの `macro_rules!` マクロを使えば可能です。
+一歩ずつ進んでいきましょう。
+
 
 ```rust
 macro_rules! count_exprs {
@@ -864,9 +885,11 @@ macro_rules! count_exprs {
 }
 # fn main() {}
 ```
-
+<!--
 The obvious case is: given zero expressions, you would expect `count_exprs` to expand to a literal
 `0`.
+-->
+自明なケースである、0個の式が与えられたときは、 `count_exprs` は リテラル `0` に展開されるべきです。
 
 ```rust
 macro_rules! count_exprs {
@@ -879,15 +902,27 @@ macro_rules! count_exprs {
 # }
 ```
 
+<!--
 > **Aside**: You may have noticed I used parentheses here instead of curly braces for the expansion.
 > `macro_rules` really doesn't care *what* you use, so long as it's one of the "matcher" pairs: `( )`, `{ }` or `[ ]`.
 > In fact, you can switch out the matchers on the macro itself(*i.e.* the matchers right after the macro name), the matchers around the syntax rule, and the matchers around the corresponding expansion.
 >
 > You can also switch out the matchers used when you *invoke* a macro, but in a more limited fashion: a macro invoked as `{ ... }` or `( ... );` will *always* be parsed as an *item* (*i.e.* like a `struct` or `fn` declaration).
 > This is important when using macros in a function body; it helps disambiguate between "parse like an expression" and "parse like a statement".
+-->
+> **余談**: 式を囲むために、波かっこの代わりに丸かっこを使ったことに気づいた方がいるかもしれません。
+> `macro_rules` は、かっこが一致している限りは、どのかっこを使おうがまったく気にしません。
+> 実際、マクロ自体のかっこ(マクロ名のすぐ右にあるもの)、構文ルールを囲むかっこ、そしてそれに対応する展開形を囲むかっこを好きに切り替えることができます。
+>
+> マクロを呼び出す際に使うかっこを切り替えることもできますが、この場合少し制限が強くなります。`{ ... }` または `( ... );` という形で呼び出されたマクロは*常に*アイテム(`struct` や `fn` の宣言のようなもの)としてパースされます。
+> これはマクロを関数の本体の中で使うときに重要になります。「式のようにパース」するか「文のようにパース」するかをはっきりさせるのに役立ちます。
 
+<!--
 What if you have *one* expression?
 That should be a literal `1`.
+-->
+式が*1つ*の場合はどうでしょうか？
+それはリテラル `1` に展開されるべきです。
 
 ```rust
 macro_rules! count_exprs {
@@ -903,7 +938,10 @@ macro_rules! count_exprs {
 # }
 ```
 
+<!--
 Two?
+-->
+2つなら？
 
 ```rust
 macro_rules! count_exprs {
@@ -921,8 +959,10 @@ macro_rules! count_exprs {
 #     assert_eq!(_2, 2);
 # }
 ```
-
+<!--
 We can "simplify" this a little by re-expressing the case of two expressions recursively.
+-->
+式が2つの場合を再帰的に表しなおすことで、これを「単純化」できます。
 
 ```rust
 macro_rules! count_exprs {
@@ -940,9 +980,12 @@ macro_rules! count_exprs {
 #     assert_eq!(_2, 2);
 # }
 ```
-
+<!--
 This is fine since Rust can fold `1 + 1` into a constant value.
 What if we have three expressions?
+-->
+Rustは `1 + 1` を定数値に畳み込むので、問題ありません。
+式が3つならどうでしょうか？
 
 ```rust
 macro_rules! count_exprs {
@@ -964,12 +1007,22 @@ macro_rules! count_exprs {
 # }
 ```
 
+<!--
 > **Aside**: You might be wondering if we could reverse the order of these rules.
 > In this particular case, *yes*, but the macro system can sometimes be picky about what it is and is not willing to recover from.
 > If you ever find yourself with a multi-rule macro that you *swear* should work, but gives you errors about unexpected tokens, try changing the order of the rules.
+-->
+> **余談**: もしルールの順序を逆にしたとしても問題ないのだろうか、と思った方がいるかもしれません。
+> 今回の例に限っていえば、問題ありません。しかし、マクロシステムは時にルールの順序にうるさくなり、なかなか言うことを聞かなくなることがあります。
+> 間違いなく動くはずだと思っていた複数のルールを持つマクロが、「予期しないトークン(unexpected tokens)」というエラーを出すようであれば、ルールの順序を変えてみましょう。
 
+<!--
 Hopefully, you can see the pattern here.
 We can always reduce the list of expressions by matching one expression, followed by zero or more expressions, expanding that into 1 + a count.
+-->
+パターンが見えてきたのではないでしょうか。
+1つの式とそれに続く0個以上の式にマッチングさせ、1 + (残りのカウント) の形に展開することで、式のリストを畳み込む(reduce)ことができます。
+
 
 ```rust
 macro_rules! count_exprs {
@@ -990,10 +1043,17 @@ macro_rules! count_exprs {
 # }
 ```
 
+<!--
 > **<abbr title="Just for this example">JFTE</abbr>**: this is not the *only*, or even the *best* way of counting things.
 > You may wish to peruse the [Counting](./building-blocks/counting.md) section later for a more efficient way.
+-->
+> **<abbr title="Just for this example()">JFTE</abbr>**: これはものを数えるための*唯一の*方法でも、*最良の*方法でもありません。
+> より効率的な方法を知るには、[数を数える](./building-blocks/counting.md)の節をよく読むとよいでしょう。
 
+<!--
 With this, we can now modify `recurrence` to determine the necessary size of `mem`.
+-->
+これを使って、`recurrence` を変更し、`mem` に必要なサイズを割り出すようにできます。
 
 ```rust
 // added:
@@ -1086,7 +1146,10 @@ macro_rules! recurrence {
 # }
 ```
 
+<!--
 With that done, we can now substitute the last thing: the `recur` expression.
+-->
+`inits` の置換はこれで完成したので、ついに最後の `recur` 式の置換に移れます。
 
 ```rust
 # macro_rules! count_exprs {
@@ -1161,7 +1224,10 @@ With that done, we can now substitute the last thing: the `recur` expression.
 # }
 ```
 
+<!--
 And, when we compile our finished `macro_rules!` macro...
+--->
+そして、完成した `macro_rules!` マクロをコンパイルすると...
 
 ```text
 error[E0425]: cannot find value `a` in this scope
@@ -1189,16 +1255,26 @@ error[E0425]: cannot find value `n` in this scope
    |                                                             ^ not found in this scope
 ```
 
+<!--
 ... wait, what?
 That can't be right... let's check what the macro is expanding to.
+-->
+... 待て、何だって？
+そんなはずは... マクロがどう展開されているか確かめてみましょう。
 
 ```shell
 $ rustc +nightly -Zunpretty=expanded recurrence.rs
 ```
 
+<!--
 The `-Zunpretty=expanded` argument tells `rustc` to perform macro expansion, then turn the resulting AST back into source code.
 The output (after cleaning up some formatting) is shown below;
 in particular, note the place in the code where `$recur` was substituted:
+-->
+`-Zunpretty=expanded` 引数は `rustc` にマクロの展開を行うように伝え、それから結果の抽象構文木をソースコードに戻します。
+出力(フォーマット整理済)を以下に示します。
+特に、`$recur` が置換された箇所に注意してみましょう。
+
 
 ```rust,ignore
 #![feature(no_std)]
@@ -1295,11 +1371,19 @@ fn main() {
 }
 ```
 
+<!--
 But that looks fine!
 If we add a few missing `#![feature(...)]` attributes and feed it to a nightly build of `rustc`, it even compiles!  ... *what?!*
+-->
+それでもやはり問題ないように見えます！
+いくつか不足している `#![feature(...)]` 属性を追加して、`rustc` のnightlyビルドに食わせると、なんとコンパイルが通ります！ ... *何だって？！*
 
+<!--
 > **Aside**: You can't compile the above with a non-nightly build of `rustc`.
 > This is because the expansion of the `println!` macro depends on internal compiler details which are *not* publicly stabilized.
+-->
+> **余談**: 上のコードはnightlyビルドでない `rustc` ではコンパイルできません。
+> これは `println!` マクロの展開形が、公に標準化されて*いない*コンパイラの内部詳細に依存しているためです。
 
 ### Being Hygienic
 
