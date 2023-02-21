@@ -1385,11 +1385,19 @@ If we add a few missing `#![feature(...)]` attributes and feed it to a nightly b
 > **余談**: 上のコードはnightlyビルドでない `rustc` ではコンパイルできません。
 > これは `println!` マクロの展開形が、公に標準化されて*いない*コンパイラの内部詳細に依存しているためです。
 
+<!--
 ### Being Hygienic
+-->
+### 衛生的に行こう
 
+<!--
 The issue here is that identifiers in Rust syntax extensions are *hygienic*.
 That is, identifiers from two different contexts *cannot* collide.
 To show the difference, let's take a simpler example.
+-->
+ここでの問題は、Rustの構文拡張において識別子が*衛生的*(hygienic)であるということです。
+つまり、2つの別のコンテキストからくる識別子は衝突*しえない*ということです。
+違いを示すため、もっと単純な例を見てみましょう。
 
 ```rust,ignore
 macro_rules! using_a {
@@ -1405,37 +1413,69 @@ let four = using_a!(a / 10);
 # fn main() {}
 ```
 
+<!--
 This macro simply takes an expression, then wraps it in a block with a variable `a` defined.
 We then use this as a round-about way of computing `4`.
 There are actually *two* syntax contexts involved in this example, but they're invisible.
 So, to help with this, let's give each context a different colour.
 Let's start with the unexpanded code, where there is only a single context:
+-->
+このマクロは単に、式をとって、それを変数 `a` が定義されたブロックに包みます。
+これを、 `4` を計算するための回りくどい方法として使います。
+実はこの例には*2つの*構文コンテキストが含まれていますが、それらは目に見えません。
+そこで、見分けがつくように、それぞれのコンテキストに別々の色をつけてみましょう。
+まず展開前のコードからいきます。ここにはただ1つのコンテキストがあります。
 
 <pre class="rust rust-example-rendered"><span class="synctx-0"><span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">using_a</span> {&#xa;    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {&#xa;        {&#xa;            <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>&#xa;        }&#xa;    }&#xa;}&#xa;&#xa;<span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> <span class="macro">using_a</span><span class="macro">!</span>(<span class="ident">a</span> <span class="op">/</span> <span class="number">10</span>);</span></pre>
 
+<!--
 Now, let's expand the invocation.
+-->
+さて、マクロ呼び出しを展開しましょう。
 
 <pre class="rust rust-example-rendered"><span class="synctx-0"><span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> </span><span class="synctx-1">{&#xa;    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;    </span><span class="synctx-0"><span class="ident">a</span> <span class="op">/</span> <span class="number">10</span></span><span class="synctx-1">&#xa;}</span><span class="synctx-0">;</span></pre>
 
+<!--
 As you can see, the <code><span class="synctx-1">a</span></code> that's defined by the macro invocation is in a different context to the <code><span class="synctx-0">a</span></code> we provided in our invocation.
 As such, the compiler treats them as completely different identifiers, *even though they have the same lexical appearance*.
+-->
+ご覧の通り、マクロ呼び出しの結果定義された <code><span class="synctx-1">a</span></code> は、呼び出しに使った <code><span class="synctx-0">a</span></code> とは別のコンテキストにあります。
+そのため、*字句的な見た目が同じにもかかわらず*、コンパイラはそれらを完全に別の識別子として扱います。
 
+<!--
 This is something to be *really* careful of when working on `macro_rules!` macros, syntax extensions in general even: they can produce ASTs which
 will not compile, but which *will* compile if written out by hand, or dumped using `-Zunpretty=expanded`.
+-->
+これは `macro_rules!` マクロを扱う際、さらには一般の構文拡張を扱う際に、*本当に*注意すべきことです。
+同じ見た目の抽象構文木であっても、マクロが出力したものはコンパイルに失敗し、手書きや `-Zunpretty=expanded`を用いてダンプした結果であればコンパイルに成功する、ということがありうるのです。
 
+<!--
 The solution to this is to capture the identifier *with the appropriate syntax context*.
 To do that, we need to again adjust our macro syntax.
 To continue with our simpler example:
+-->
+これに対する解決策は、識別子を*適切な構文コンテキストにおいて*捕捉することです。
+そのためには、再度マクロの構文を調整する必要があります。
+引き続き単純な例で考えます:
 
 <pre class="rust rust-example-rendered"><span class="synctx-0"><span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">using_a</span> {&#xa;    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {&#xa;        {&#xa;            <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>&#xa;        }&#xa;    }&#xa;}&#xa;&#xa;<span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> <span class="macro">using_a</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="ident">a</span> <span class="op">/</span> <span class="number">10</span>);</span></pre>
 
+<!--
 This now expands to:
+-->
+これは次のように展開されます:
 
 <pre class="rust rust-example-rendered"><span class="synctx-0"><span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> </span><span class="synctx-1">{&#xa;    <span class="kw">let</span> </span><span class="synctx-0"><span class="ident">a</span></span><span class="synctx-1"> <span class="op">=</span> <span class="number">42</span>;&#xa;    </span><span class="synctx-0"><span class="ident">a</span> <span class="op">/</span> <span class="number">10</span></span><span class="synctx-1">&#xa;}</span><span class="synctx-0">;</span></pre>
 
+<!--
 Now, the contexts match, and the code will compile.
 We can make this adjustment to our `recurrence!` macro by explicitly capturing `a` and `n`.
 After making the necessary changes, we have:
+-->
+今度はコンテキストが一致し、このコードはコンパイルに成功します。
+`a` と `n` を明示的に捕捉することで、`recurrence!` マクロに対してもこの調整を行うことができます。
+必要な変更を加えると、次のようになります:
+
 
 ```rust
 macro_rules! count_exprs {
@@ -1523,8 +1563,12 @@ fn main() {
 }
 ```
 
+<!--
 And it compiles!
 Now, let's try with a different sequence.
+-->
+そしてこれはコンパイルに成功します！
+では、別の数列を試してみましょう。
 
 ```rust
 # macro_rules! count_exprs {
@@ -1608,8 +1652,10 @@ for e in recurrence!(f[i]: f64 = 1.0; ...; f[i-1] * i as f64).take(10) {
 }
 # }
 ```
-
+<!--
 Which gives us:
+-->
+結果はこうなります:
 
 ```text
 1
@@ -1624,6 +1670,9 @@ Which gives us:
 362880
 ```
 
+<!--
 Success!
+-->
+成功です！
 
 [`macro_rules!`]: ./macros-methodical.md
