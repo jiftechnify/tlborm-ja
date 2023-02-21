@@ -1,8 +1,16 @@
+<!--
 # Macros 2.0
+-->
+# マクロ2.0
 
+<!--
 > *RFC*: [rfcs#1584](https://github.com/rust-lang/rfcs/blob/master/text/1584-macros.md)\
 > *Tracking Issue*: [rust#39412](https://github.com/rust-lang/rust/issues/39412)\
 > *Feature*: `#![feature(decl_macro)]`
+-->
+> *RFC*: [rfcs#1584](https://github.com/rust-lang/rfcs/blob/master/text/1584-macros.md)\
+> *トラッキングIssue*: [rust#39412](https://github.com/rust-lang/rust/issues/39412)\
+> *機能フラグ*: `#![feature(decl_macro)]`
 
 While not yet stable(or rather far from being finished), there is proposal for a new declarative macro system that is supposed to replace `macro_rules!` dubbed declarative macros 2.0, `macro`, `decl_macro` or confusingly also `macros-by-example`.
 
