@@ -1,0 +1,616 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>フラグメント指定子 - Rustマクロの薄い本</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../res/rust-syntax-bg-highlight.css">
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">はじめに</a></li><li class="chapter-item expanded "><a href="../../syntax-extensions.html"><strong aria-hidden="true">1.</strong> 構文拡張</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../syntax-extensions/source-analysis.html"><strong aria-hidden="true">1.1.</strong> ソースコード解析</a></li><li class="chapter-item "><a href="../../syntax-extensions/ast.html"><strong aria-hidden="true">1.2.</strong> ASTにおけるマクロ</a></li><li class="chapter-item "><a href="../../syntax-extensions/expansion.html"><strong aria-hidden="true">1.3.</strong> 展開</a></li><li class="chapter-item "><a href="../../syntax-extensions/hygiene.html"><strong aria-hidden="true">1.4.</strong> 衛生性</a></li><li class="chapter-item "><a href="../../syntax-extensions/debugging.html"><strong aria-hidden="true">1.5.</strong> デバッグ</a></li></ol></li><li class="chapter-item expanded "><a href="../../decl-macros.html"><strong aria-hidden="true">2.</strong> 宣言的マクロ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../decl-macros/macros-methodical.html"><strong aria-hidden="true">2.1.</strong> 体系的説明</a></li><li class="chapter-item "><a href="../../decl-macros/macros-practical.html"><strong aria-hidden="true">2.2.</strong> 実践的説明</a></li><li class="chapter-item expanded "><a href="../../decl-macros/minutiae.html"><strong aria-hidden="true">2.3.</strong> 枝葉末節</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../../decl-macros/minutiae/fragment-specifiers.html" class="active"><strong aria-hidden="true">2.3.1.</strong> フラグメント指定子</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/metavar-and-expansion.html"><strong aria-hidden="true">2.3.2.</strong> Metavariables and Expansion Redux</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/metavar-expr.html"><strong aria-hidden="true">2.3.3.</strong> Metavariable Expressions</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/hygiene.html"><strong aria-hidden="true">2.3.4.</strong> Hygiene</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/identifiers.html"><strong aria-hidden="true">2.3.5.</strong> Non-Identifier Identifiers</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/debugging.html"><strong aria-hidden="true">2.3.6.</strong> Debugging</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/scoping.html"><strong aria-hidden="true">2.3.7.</strong> Scoping</a></li><li class="chapter-item "><a href="../../decl-macros/minutiae/import-export.html"><strong aria-hidden="true">2.3.8.</strong> Import and Export</a></li></ol></li><li class="chapter-item "><a href="../../decl-macros/patterns.html"><strong aria-hidden="true">2.4.</strong> パターン</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../decl-macros/patterns/callbacks.html"><strong aria-hidden="true">2.4.1.</strong> Callbacks</a></li><li class="chapter-item "><a href="../../decl-macros/patterns/tt-muncher.html"><strong aria-hidden="true">2.4.2.</strong> Incremental TT Munchers</a></li><li class="chapter-item "><a href="../../decl-macros/patterns/internal-rules.html"><strong aria-hidden="true">2.4.3.</strong> Internal Rules</a></li><li class="chapter-item "><a href="../../decl-macros/patterns/push-down-acc.html"><strong aria-hidden="true">2.4.4.</strong> Push-down Accumulation</a></li><li class="chapter-item "><a href="../../decl-macros/patterns/repetition-replacement.html"><strong aria-hidden="true">2.4.5.</strong> Repetition Replacement</a></li><li class="chapter-item "><a href="../../decl-macros/patterns/tt-bundling.html"><strong aria-hidden="true">2.4.6.</strong> TT Bundling</a></li></ol></li><li class="chapter-item "><a href="../../decl-macros/building-blocks.html"><strong aria-hidden="true">2.5.</strong> 構成要素</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../decl-macros/building-blocks/ast-coercion.html"><strong aria-hidden="true">2.5.1.</strong> AST Coercion</a></li><li class="chapter-item "><a href="../../decl-macros/building-blocks/counting.html"><strong aria-hidden="true">2.5.2.</strong> Counting</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../decl-macros/building-blocks/abacus-counting.html"><strong aria-hidden="true">2.5.2.1.</strong> Abacus Counting</a></li></ol></li><li class="chapter-item "><a href="../../decl-macros/building-blocks/parsing.html"><strong aria-hidden="true">2.5.3.</strong> Parsing Rust</a></li></ol></li><li class="chapter-item "><a href="../../decl-macros/macros2.html"><strong aria-hidden="true">2.6.</strong> マクロ2.0</a></li></ol></li><li class="chapter-item expanded "><a href="../../proc-macros.html"><strong aria-hidden="true">3.</strong> Procedural Macros</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../proc-macros/methodical.html"><strong aria-hidden="true">3.1.</strong> A Methodical Introduction</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../../proc-macros/methodical/function-like.html"><strong aria-hidden="true">3.1.1.</strong> Function-like</a></li><li class="chapter-item "><a href="../../proc-macros/methodical/attr.html"><strong aria-hidden="true">3.1.2.</strong> Attribute</a></li><li class="chapter-item "><a href="../../proc-macros/methodical/derive.html"><strong aria-hidden="true">3.1.3.</strong> Derive</a></li></ol></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.</strong> A Practical Introduction</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.2.1.</strong> Function-like</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.2.</strong> Attribute</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.3.</strong> Derive</div></li></ol></li><li class="chapter-item "><a href="../../proc-macros/third-party-crates.html"><strong aria-hidden="true">3.3.</strong> Third-Party Crates</a></li><li class="chapter-item "><a href="../../proc-macros/hygiene.html"><strong aria-hidden="true">3.4.</strong> Hygiene and Spans</a></li><li class="chapter-item "><div><strong aria-hidden="true">3.5.</strong> Techniques</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.5.1.</strong> Testing</div></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../../glossary.html">用語集</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rustマクロの薄い本</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jiftechnify/tlborm-ja" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!--
+# Fragment Specifiers
+-->
+<h1 id="フラグメント指定子-frangment-specifiers"><a class="header" href="#フラグメント指定子-frangment-specifiers">フラグメント指定子 (Frangment Specifiers)</a></h1>
+<!--
+As mentioned in the [`methodical introduction`](../macros-methodical.md) chapter, Rust, as of 1.60, has 14 fragment specifiers.
+This section will go a bit more into detail for some of them and shows a few example inputs of what each matcher matches.
+-->
+<p><a href="../macros-methodical.html">体系的説明</a>の章で触れたように、Rust(1.60時点)には14種類のフラグメント指定子があります。
+本節ではその一部についてもう少し詳しく説明し、各マッチパターンに一致する入力例を示します。</p>
+<!--
+> **Note**: Capturing with anything but the `ident`, `lifetime` and `tt` fragments will render the captured AST opaque, making it impossible to further match it with other fragment specifiers in future macro invocations.
+-->
+<blockquote>
+<p><strong>Note</strong>: <code>ident</code>, <code>lifetime</code>, <code>tt</code> 以外のすべてのフラグメントによる捕捉は、抽象構文木を不透明(opaque)にします。これにより、その抽象構文木は後のマクロ呼び出しにおいてそれ以上フラグメント指定子にマッチしなくなります。</p>
+</blockquote>
+<ul>
+<li><a href="#block"><code>block</code></a></li>
+<li><a href="#expr"><code>expr</code></a></li>
+<li><a href="#ident"><code>ident</code></a></li>
+<li><a href="#item"><code>item</code></a></li>
+<li><a href="#lifetime"><code>lifetime</code></a></li>
+<li><a href="#literal"><code>literal</code></a></li>
+<li><a href="#meta"><code>meta</code></a></li>
+<li><a href="#pat"><code>pat</code></a></li>
+<li><a href="#pat_param"><code>pat_param</code></a></li>
+<li><a href="#path"><code>path</code></a></li>
+<li><a href="#stmt"><code>stmt</code></a></li>
+<li><a href="#tt"><code>tt</code></a></li>
+<li><a href="#ty"><code>ty</code></a></li>
+<li><a href="#vis"><code>vis</code></a></li>
+</ul>
+<h2 id="block"><a class="header" href="#block"><code>block</code></a></h2>
+<!--
+The `block` fragment solely matches a [block expression](https://doc.rust-lang.org/reference/expressions/block-expr.html), which consists of an opening `{` brace, followed by any number of statements and finally followed by a closing `}` brace.
+-->
+<p><code>block</code> フラグメントは、開き波かっこ <code>{</code>・任意の数の文・閉じ波かっこ <code>}</code> の並びからなる<a href="https://doc.rust-lang.org/reference/expressions/block-expr.html">ブロック式</a>のみにマッチします。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! blocks {
+    ($($block:block)*) =&gt; ();
+}
+
+blocks! {
+    {}
+    {
+        let zig;
+    }
+    { 2 }
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="expr"><a class="header" href="#expr"><code>expr</code></a></h2>
+<!--
+The `expr` fragment matches any kind of [expression](https://doc.rust-lang.org/reference/expressions.html) (Rust has a lot of them, given it *is* an expression orientated language).
+-->
+<p><code>expr</code> フラグメントは、任意の種類の<a href="https://doc.rust-lang.org/reference/expressions.html">式</a>にマッチします (Rustは「式指向 (expression oriented)」の言語なので、たくさんの種類の式があります)。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! expressions {
+    ($($expr:expr)*) =&gt; ();
+}
+
+expressions! {
+    &quot;literal&quot;
+    funcall()
+    future.await
+    break 'foo bar
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="ident"><a class="header" href="#ident"><code>ident</code></a></h2>
+<!--
+The `ident` fragment matches an [identifier](https://doc.rust-lang.org/reference/identifiers.html) or *keyword*.
+-->
+<p><code>ident</code> フラグメントは、<a href="https://doc.rust-lang.org/reference/identifiers.html">識別子</a>または<em>予約語</em>にマッチします。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! idents {
+    ($($ident:ident)*) =&gt; ();
+}
+
+idents! {
+    // _ &lt;- This is not an ident, it is a pattern
+    // _ &lt;- これは識別子ではなくパターン
+    foo
+    async
+    O_________O
+    _____O_____
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="item"><a class="header" href="#item"><code>item</code></a></h2>
+<!--
+The `item` fragment simply matches any of Rust's [item](https://doc.rust-lang.org/reference/items.html) *definitions*, not identifiers that refer to items.
+This includes visibility modifiers.
+-->
+<p><code>item</code> フラグメントは、任意のRustの<a href="https://doc.rust-lang.org/reference/items.html">アイテム</a>の<em>定義</em>のみにマッチし、アイテムを参照する識別子にはマッチしません。
+これには可視性修飾子を含みます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! items {
+    ($($item:item)*) =&gt; ();
+}
+
+items! {
+    struct Foo;
+    enum Bar {
+        Baz
+    }
+    impl Foo {}
+    pub use crate::foo;
+    /*...*/
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="lifetime"><a class="header" href="#lifetime"><code>lifetime</code></a></h2>
+<!--
+The `lifetime` fragment matches a [lifetime or label](https://doc.rust-lang.org/reference/tokens.html#lifetimes-and-loop-labels).
+It's quite similar to [`ident`](#ident) but with a prepended `'`.
+-->
+<p><code>lifetime</code> フラグメントは、<a href="https://doc.rust-lang.org/reference/tokens.html#lifetimes-and-loop-labels">ライフタイムとラベル</a>にマッチします。
+ライフタイムは、<code>'</code> が先頭につくことを除き<a href="#ident"><code>ident</code></a>と非常に似ています。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! lifetimes {
+    ($($lifetime:lifetime)*) =&gt; ();
+}
+
+lifetimes! {
+    'static
+    'shiv
+    '_
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="literal"><a class="header" href="#literal"><code>literal</code></a></h2>
+<!--
+The `literal` fragment matches any [literal expression](https://doc.rust-lang.org/reference/expressions/literal-expr.html).
+-->
+<p><code>literal</code> フラグメントは、任意の<a href="https://doc.rust-lang.org/reference/expressions/literal-expr.html">リテラル式</a>にマッチします。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! literals {
+    ($($literal:literal)*) =&gt; ();
+}
+
+literals! {
+    -1
+    &quot;hello world&quot;
+    2.3
+    b'b'
+    true
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="meta"><a class="header" href="#meta"><code>meta</code></a></h2>
+<!--
+The `meta` fragment matches the contents of an [attribute](https://doc.rust-lang.org/reference/attributes.html).
+That is, it will match a simple path, one without generic arguments followed by a delimited token tree or an `=` followed by a literal expression.
+-->
+<p><code>meta</code> フラグメントは、<a href="https://doc.rust-lang.org/reference/attributes.html">属性</a>の中身にマッチします。
+すなわち、それは単純パス(simple path)と呼ばれるジェネリック引数を持たないパスの後ろに、かっこで括られたトークン木または <code>=</code>とリテラル式の並びが続いたものにマッチします</p>
+<!--
+> **Note**: You will usually see this fragment being used in a matcher like `#[$meta:meta]` or `#![$meta:meta]` to actually capture an attribute.
+-->
+<p><strong>Note</strong>: 通常、このフラグメントは、属性を捕捉するための <code>#[$meta:meta]</code> または<code>#![$meta:meta]</code> といったマッチパターンの中で使われます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! metas {
+    ($($meta:meta)*) =&gt; ();
+}
+
+metas! {
+    ASimplePath
+    super::man
+    path = &quot;home&quot;
+    foo(bar)
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<!--
+> **Doc-Comment Fact**: Doc-Comments like `/// ...` and `!// ...` are actually syntax sugar for attributes! They desugar to `#[doc="..."]` and `#![doc="..."]` respectively, meaning you can match on them like with attributes!
+-->
+<blockquote>
+<p><strong>Docコメントの真実</strong>: <code>/// ...</code> や <code>!// ...</code> のようなDocコメントは、実は属性の構文糖衣なのです！ これらはそれぞれ <code>#[doc=&quot;...&quot;]</code> や <code>#![doc=&quot;...&quot;]</code> という形に脱糖されます。
+つまり、Docコメントに対して属性と同様のマッチングが行えるということです！</p>
+</blockquote>
+<h2 id="pat"><a class="header" href="#pat"><code>pat</code></a></h2>
+<!--
+The `pat` fragment matches any kind of [pattern](https://doc.rust-lang.org/reference/patterns.html), including or-patterns starting with the 2021 edition.
+-->
+<p><code>pat</code> フラグメントは、任意の種類の<a href="https://doc.rust-lang.org/reference/patterns.html">パターン</a>にマッチします。これには、Rust 2021 エディションで追加されたorパターンを含みます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! patterns {
+    ($($pat:pat)*) =&gt; ();
+}
+
+patterns! {
+    &quot;literal&quot;
+    _
+    0..5
+    ref mut PatternsAreNice
+    0 | 1 | 2 | 3
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="pat_param"><a class="header" href="#pat_param"><code>pat_param</code></a></h2>
+<!--
+In the 2021 edition, the behavior for the `pat` fragment type has been changed to allow or-patterns to be parsed.
+This changes the follow list of the fragment, preventing such fragment from being followed by a `|` token.
+To avoid this problem or to get the old fragment behavior back one can use the `pat_param` fragment which allows `|` to follow it, as it disallows top level or-patterns.
+-->
+<p>Rust 2021 エディションにおいて、orパターンのパースを可能にするために <code>pat </code>フラグメントの動作が変更されました。
+<code>pat</code> フラグメントに続けられるもののリストが変更され、<code>|</code> トークンを続けることができなくなりました。
+この問題を回避する、または従来の動作を取り戻すのに、<code>pat_param</code> フラグメントが使えます。これには <code>|</code> を続けることができますが、一方でトップレベルのorパターンには使えません。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! patterns {
+    ($( $( $pat:pat_param )|+ )*) =&gt; ();
+}
+
+patterns! {
+    &quot;literal&quot;
+    _
+    0..5
+    ref mut PatternsAreNice
+    0 | 1 | 2 | 3
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="path"><a class="header" href="#path"><code>path</code></a></h2>
+<!--
+The `path` fragment matches a so called [TypePath](https://doc.rust-lang.org/reference/paths.html#paths-in-types) style path.
+This includes the function style trait forms, `Fn() -> ()`.
+-->
+<p><code>path</code> フラグメントは、<a href="https://doc.rust-lang.org/reference/paths.html#paths-in-types">TypePath</a>と呼ばれるスタイルのパスにマッチします。
+これには関数スタイルのトレイト <code>Fn() -&gt; ()</code> を含みます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! paths {
+    ($($path:path)*) =&gt; ();
+}
+
+paths! {
+    ASimplePath
+    ::A::B::C::D
+    G::&lt;eneri&gt;::C
+    FnMut(u32) -&gt; ()
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="stmt"><a class="header" href="#stmt"><code>stmt</code></a></h2>
+<!--
+The `statement` fragment solely matches a [statement](https://doc.rust-lang.org/reference/statements.html) without its trailing semicolon, unless it is an item statement that requires one (such as a Unit-Struct).
+-->
+<p><code>stmt</code> フラグメントは<a href="https://doc.rust-lang.org/reference/statements.html">文</a>のみにマッチします。(Unit構造体のような)セミコロンが必須のアイテム文の場合を除き、末尾のセミコロンにはマッチしません。</p>
+<!--
+Let's use a simple example to show exactly what is meant with this.
+We use a macro that merely emits what it captures:
+-->
+<p>簡単な例によって、これが正確には何を意図しているのかを示します。
+捕捉したものをそのまま出力するだけのマクロを使います:</p>
+<pre><code class="language-rust ignore">macro_rules! statements {
+    ($($stmt:stmt)*) =&gt; ($($stmt)*);
+}
+
+fn main() {
+    statements! {
+        struct Foo;
+        fn foo() {}
+        let zig = 3
+        let zig = 3;
+        3
+        3;
+        if true {} else {}
+        {}
+    }
+}
+</code></pre>
+<!--
+Expanding this, via the [playground](https://play.rust-lang.org/) for example[^debugging], gives us roughly the following:
+-->
+<p>例えば<a href="https://play.rust-lang.org/">playground</a>を使って<sup class="footnote-reference"><a href="#debugging">1</a></sup>、これを展開すると、おおよそ次のようなものが得られます:</p>
+<pre><code class="language-rust ignore">/* snip */
+
+fn main() {
+    struct Foo;
+    fn foo() { }
+    let zig = 3;
+    let zig = 3;
+    ;
+    3;
+    3;
+    ;
+    if true { } else { }
+    { }
+}</code></pre>
+<!--
+From this we can tell a few things.
+-->
+<p>この結果からいくつかのことがいえます。</p>
+<!--
+The first you should be able to see immediately is that while the `stmt` fragment doesn't capture trailing semicolons, it still emits them when required, even if the statement is already followed by one.
+The simple reason for that is that semicolons on their own are already valid statements which the fragment captures eagerly.
+So our macro isn't capturing 8 times, but 10!
+This can be important when doing multiples repetitions and expanding these in one repetition expansion, as the repetition numbers have to match in those cases.
+-->
+<p>まず、すぐにわかることは、<code>stmt</code> フラグメントが末尾のセミコロンを捕捉しないにもかかわらず、必要なところにセミコロンが出力されているということです。これは、すでに文の末尾にセミコロンがあったとしても同様です。
+この理由は単純で、セミコロンはそれ自体がすでに、<code>stmt</code> フラグメントが捕捉する妥当な文だからです。
+よって、このマクロは8回ではなく10回捕捉を行っているのです！
+これは複数回の繰り返しを行い、それらを一つの繰り返し展開形として展開する際に重要となりえます。そのようなケースでは繰り返しの回数が一致している必要があるためです。</p>
+<!--
+Another thing you should be able to notice here is that the trailing semicolon of the `struct Foo;` item statement is being matched, otherwise we would've seen an extra one like in the other cases.
+This makes sense as we already said, that for item statements that require one, the trailing semicolon will be matched with.
+-->
+<p>もう一つわかることは、アイテム文<code>struct Foo;</code> の末尾のセミコロンにマッチしているということです。そうでなければ、他の場合のように余計なセミコロンが出てくるはずです。
+前述したように、セミコロン必須のアイテム文に関しては末尾のセミコロンがマッチ対象になるため、筋は通っています。</p>
+<!--
+A last observation is that expressions get emitted back with a trailing semicolon, unless the expression solely consists of only a block expression or control flow expression.
+-->
+<p>最後に、単独のブロック式や制御フロー式のみから構成される場合を除き、式が末尾のセミコロンつきで出力され直していることが観察できます。</p>
+<!--
+The fine details of what was just mentioned here can be looked up in the [reference](https://doc.rust-lang.org/reference/statements.html).
+-->
+<p>ここで言及したことの詳細を知るには、<a href="https://doc.rust-lang.org/reference/statements.html">リファレンス</a>をあたってください。</p>
+<!--
+Fortunately, these fine details here are usually not of importance whatsoever, with the small exception that was mentioned earlier in regards to repetitions which by itself shouldn't be a common problem to run into.
+-->
+<p>幸い、これらの詳細は通常まったく重要ではありません。先述したように繰り返しに関する小さな例外はありますが、それだけではそこまで頻繁には問題にならないはずです。</p>
+<!--
+[^debugging]:See the [debugging chapter](./debugging.md) for tips on how to do this.
+-->
+<div class="footnote-definition" id="debugging"><sup class="footnote-definition-label">1</sup>
+<p>デバッグを行う際のコツについては<a href="./debugging.html">デバッグの章</a>を参照。</p>
+</div>
+<h2 id="tt"><a class="header" href="#tt"><code>tt</code></a></h2>
+<!--
+The `tt` fragment matches a TokenTree.
+If you need a refresher on what exactly a TokenTree was you may want to revisit the [TokenTree chapter](../../syntax-extensions/source-analysis.md#token-trees) of this book.
+The `tt` fragment is one of the most powerful fragments, as it can match nearly anything while still allowing you to inspect the contents of it at a later state in the macro.
+-->
+<p><code>tt</code> フラグメントは1つのトークン木にマッチします。
+トークン木が正確には何なのかについて復習したければ、本書の<a href="../../syntax-extensions/source-analysis.html#token-trees">トークン木の章</a>を読み返すとよいでしょう。
+<code>tt </code>フラグメントは最も強力なフラグメントの一角です。ほぼすべてのものにマッチさせられるうえに、あとでその中身を調べる余地を残すこともできるためです。</p>
+<!--
+This allows one to make use of very powerful patterns like the [tt-muncher](../patterns/tt-muncher.md) or the [push-down-accumulator](../patterns/push-down-acc.md).
+-->
+<p>このフラグメントは、<a href="../patterns/tt-muncher.html">tt-muncher</a>や<a href="../patterns/push-down-acc.html">プッシュダウン累算器</a> (push-down-accumulator) といった非常に強力なパターンを可能にします。</p>
+<h2 id="ty"><a class="header" href="#ty"><code>ty</code></a></h2>
+<!--
+The `ty` fragment matches any kind of [type expression](https://doc.rust-lang.org/reference/types.html#type-expressions).
+-->
+<p><code>ty</code> フラグメントは、任意の種類の<a href="https://doc.rust-lang.org/reference/types.html#type-expressions">型の式</a> (type expression) にマッチします。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! types {
+    ($($type:ty)*) =&gt; ();
+}
+
+types! {
+    foo::bar
+    bool
+    [u8]
+    impl IntoIterator&lt;Item = u32&gt;
+}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<h2 id="vis"><a class="header" href="#vis"><code>vis</code></a></h2>
+<!--
+The `vis` fragment matches a *possibly empty* [Visibility qualifier].
+-->
+<p><code>vis</code> フラグメントは<em>空かもしれない</em><a href="https://doc.rust-lang.org/reference/visibility-and-privacy.html">可視性修飾子</a> (Visibility qualifier) にマッチします。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! visibilities {
+    //         ∨~~Note this comma, since we cannot repeat a `vis` fragment on its own
+    //         v~~このコンマが必要なことに注意。`vis`フラグメント単体を繰り返すことはできないため。
+    ($($vis:vis,)*) =&gt; ();
+}
+
+visibilities! {
+    , // no vis is fine, due to the implicit `?`
+      // 暗黙の `?` により、可視性なしでも問題ない
+    pub,
+    pub(crate),
+    pub(in super),
+    pub(in some_path),
+}
+<span class="boring">}</span></code></pre></pre>
+<!--
+While able to match empty sequences of tokens, the fragment specifier still acts quite different from [optional repetitions](../macros-methodical.md#repetitions) which is described in the following:
+-->
+<p>空のトークン列にマッチさせられるとはいえ、以下に説明するように、<code>vis</code> フラグメントは<a href="../macros-methodical.html#repetitions">選択的繰り返し</a>とは大きく異なった動作をします。</p>
+<!--
+If it is being matched against no left over tokens the entire macro matching fails.
+-->
+<p><code>vis</code> に空トークン列をマッチさせたあとに余るトークンがない場合、マクロのマッチング全体が失敗します。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! non_optional_vis {
+    ($vis:vis) =&gt; ();
+}
+non_optional_vis!();
+// ^^^^^^^^^^^^^^^^ error: missing tokens in macro arguments
+<span class="boring">}</span></code></pre></pre>
+<!--
+`$vis:vis $ident:ident` matches fine, unlike `$(pub)? $ident:ident` which is ambiguous, as `pub` denotes a valid identifier.
+-->
+<p><code>$vis:vis $ident:ident</code> は問題なくマッチしますが、<code>$(pub)? $ident:ident</code> は <code>pub</code> が妥当な識別子であるために曖昧なのでマッチしません。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>macro_rules! vis_ident {
+    ($vis:vis $ident:ident) =&gt; ();
+}
+vis_ident!(pub foo); // this works fine
+                     // これは問題なく動く
+
+macro_rules! pub_ident {
+    ($(pub)? $ident:ident) =&gt; ();
+}
+pub_ident!(pub foo);
+        // ^^^ error: local ambiguity when calling macro `pub_ident`: multiple parsing options: built-in NTs ident ('ident') or 1 other option.
+<span class="boring">}</span></code></pre></pre>
+<!--
+Being a fragment that matches the empty token sequence also gives it a very interesting quirk in combination with `tt` fragments and recursive expansions.
+-->
+<p>空のトークン列にマッチするフラグメントは、<code>tt</code> フラグメントや再帰的展開と組み合わせることでとても興味深い奇妙な動作を生み出します。</p>
+<!--
+When matching the empty token sequence, the metavariable will still count as a capture and since it is not a `tt`, `ident` or `lifetime` fragment it will become opaque to further expansions.
+This means if this capture is passed onto another macro invocation that captures it as a `tt` you effectively end up with token tree that contains nothing!
+-->
+<p>空のトークン列にマッチする場合であっても、<code>vis</code> 指定のメタ変数はやはりキャプチャとみなされ、さらに <code>tt</code>, <code>ident</code>, <code>lifetime</code>フラグメントでないため以降の展開に対して不透明になります。
+このキャプチャを別のマクロを呼び出す際に <code>tt</code> として渡すと、実質的に何も含まないトークン木が手に入ることになります。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! it_is_opaque {
+    (()) =&gt; { &quot;()&quot; };
+    (($tt:tt)) =&gt; { concat!(&quot;$tt is &quot;, stringify!($tt)) };
+    ($vis:vis ,) =&gt; { it_is_opaque!( ($vis) ); }
+}
+fn main() {
+    // this prints &quot;$tt is &quot;, as the recursive calls hits the second branch with
+    // an empty tt, opposed to matching with the first branch!
+    // &quot;$tt is &quot; と表示される。再帰呼び出しが1番めの分岐にマッチしようとせず、
+    // 空のトークン木(tt)を伴って2番めの分岐に到達するため
+    println!(&quot;{}&quot;, it_is_opaque!(,));
+}</code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../decl-macros/minutiae.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../../decl-macros/minutiae/metavar-and-expansion.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../decl-macros/minutiae.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../../decl-macros/minutiae/metavar-and-expansion.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

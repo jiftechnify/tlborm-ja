@@ -1,0 +1,407 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ソースコード解析 - Rustマクロの薄い本</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../res/rust-syntax-bg-highlight.css">
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">はじめに</a></li><li class="chapter-item expanded "><a href="../syntax-extensions.html"><strong aria-hidden="true">1.</strong> 構文拡張</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../syntax-extensions/source-analysis.html" class="active"><strong aria-hidden="true">1.1.</strong> ソースコード解析</a></li><li class="chapter-item "><a href="../syntax-extensions/ast.html"><strong aria-hidden="true">1.2.</strong> ASTにおけるマクロ</a></li><li class="chapter-item "><a href="../syntax-extensions/expansion.html"><strong aria-hidden="true">1.3.</strong> 展開</a></li><li class="chapter-item "><a href="../syntax-extensions/hygiene.html"><strong aria-hidden="true">1.4.</strong> 衛生性</a></li><li class="chapter-item "><a href="../syntax-extensions/debugging.html"><strong aria-hidden="true">1.5.</strong> デバッグ</a></li></ol></li><li class="chapter-item expanded "><a href="../decl-macros.html"><strong aria-hidden="true">2.</strong> 宣言的マクロ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/macros-methodical.html"><strong aria-hidden="true">2.1.</strong> 体系的説明</a></li><li class="chapter-item "><a href="../decl-macros/macros-practical.html"><strong aria-hidden="true">2.2.</strong> 実践的説明</a></li><li class="chapter-item "><a href="../decl-macros/minutiae.html"><strong aria-hidden="true">2.3.</strong> 枝葉末節</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/minutiae/fragment-specifiers.html"><strong aria-hidden="true">2.3.1.</strong> フラグメント指定子</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/metavar-and-expansion.html"><strong aria-hidden="true">2.3.2.</strong> Metavariables and Expansion Redux</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/metavar-expr.html"><strong aria-hidden="true">2.3.3.</strong> Metavariable Expressions</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/hygiene.html"><strong aria-hidden="true">2.3.4.</strong> Hygiene</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/identifiers.html"><strong aria-hidden="true">2.3.5.</strong> Non-Identifier Identifiers</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/debugging.html"><strong aria-hidden="true">2.3.6.</strong> Debugging</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/scoping.html"><strong aria-hidden="true">2.3.7.</strong> Scoping</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/import-export.html"><strong aria-hidden="true">2.3.8.</strong> Import and Export</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/patterns.html"><strong aria-hidden="true">2.4.</strong> パターン</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/patterns/callbacks.html"><strong aria-hidden="true">2.4.1.</strong> Callbacks</a></li><li class="chapter-item "><a href="../decl-macros/patterns/tt-muncher.html"><strong aria-hidden="true">2.4.2.</strong> Incremental TT Munchers</a></li><li class="chapter-item "><a href="../decl-macros/patterns/internal-rules.html"><strong aria-hidden="true">2.4.3.</strong> Internal Rules</a></li><li class="chapter-item "><a href="../decl-macros/patterns/push-down-acc.html"><strong aria-hidden="true">2.4.4.</strong> Push-down Accumulation</a></li><li class="chapter-item "><a href="../decl-macros/patterns/repetition-replacement.html"><strong aria-hidden="true">2.4.5.</strong> Repetition Replacement</a></li><li class="chapter-item "><a href="../decl-macros/patterns/tt-bundling.html"><strong aria-hidden="true">2.4.6.</strong> TT Bundling</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/building-blocks.html"><strong aria-hidden="true">2.5.</strong> 構成要素</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/building-blocks/ast-coercion.html"><strong aria-hidden="true">2.5.1.</strong> AST Coercion</a></li><li class="chapter-item "><a href="../decl-macros/building-blocks/counting.html"><strong aria-hidden="true">2.5.2.</strong> Counting</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/building-blocks/abacus-counting.html"><strong aria-hidden="true">2.5.2.1.</strong> Abacus Counting</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/building-blocks/parsing.html"><strong aria-hidden="true">2.5.3.</strong> Parsing Rust</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/macros2.html"><strong aria-hidden="true">2.6.</strong> マクロ2.0</a></li></ol></li><li class="chapter-item expanded "><a href="../proc-macros.html"><strong aria-hidden="true">3.</strong> Procedural Macros</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../proc-macros/methodical.html"><strong aria-hidden="true">3.1.</strong> A Methodical Introduction</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../proc-macros/methodical/function-like.html"><strong aria-hidden="true">3.1.1.</strong> Function-like</a></li><li class="chapter-item "><a href="../proc-macros/methodical/attr.html"><strong aria-hidden="true">3.1.2.</strong> Attribute</a></li><li class="chapter-item "><a href="../proc-macros/methodical/derive.html"><strong aria-hidden="true">3.1.3.</strong> Derive</a></li></ol></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.</strong> A Practical Introduction</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.2.1.</strong> Function-like</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.2.</strong> Attribute</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.3.</strong> Derive</div></li></ol></li><li class="chapter-item "><a href="../proc-macros/third-party-crates.html"><strong aria-hidden="true">3.3.</strong> Third-Party Crates</a></li><li class="chapter-item "><a href="../proc-macros/hygiene.html"><strong aria-hidden="true">3.4.</strong> Hygiene and Spans</a></li><li class="chapter-item "><div><strong aria-hidden="true">3.5.</strong> Techniques</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.5.1.</strong> Testing</div></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../glossary.html">用語集</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rustマクロの薄い本</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jiftechnify/tlborm-ja" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!--
+# Source Analysis
+-->
+<h1 id="ソースコード解析"><a class="header" href="#ソースコード解析">ソースコード解析</a></h1>
+<!--
+### Tokenization
+-->
+<h3 id="トークン化"><a class="header" href="#トークン化">トークン化</a></h3>
+<!--
+The first stage of compilation for a Rust program is [tokenization]. This is where the source text is
+transformed into a sequence of tokens (*i.e.* indivisible lexical units; the programming language
+equivalent of "words"). Rust has various kinds of tokens, such as:
+-->
+<p>Rustプログラムのコンパイルの最初のステップは<a href="https://en.wikipedia.org/wiki/Lexical_analysis#Tokenization">トークン化</a>です。
+これはソースコードをトークン(これ以上分割できない字句単位。プログラミング言語の「単語」)の列に変換するステップです。
+Rustにはさまざまな種類のトークンがあります。例えば:</p>
+<!--
+* Identifiers: `foo`, `Bambous`, `self`, `we_can_dance`, `LaCaravane`, …
+* Literals: `42`, `72u32`, `0_______0`, `1.0e-40`, `"ferris was here"`, …
+* Keywords: `_`, `fn`, `self`, `match`, `yield`, `macro`, …
+* Symbols: `[`, `:`, `::`, `?`, `~`, `@`[^wither-at], …
+-->
+<ul>
+<li>識別子: <code>foo</code>, <code>Bambous</code>, <code>self</code>, <code>we_can_dance</code>, <code>LaCaravane</code>, …</li>
+<li>リテラル: <code>42</code>, <code>72u32</code>, <code>0_______0</code>, <code>1.0e-40</code>, <code>&quot;ferris was here&quot;</code>, …</li>
+<li>予約語: <code>_</code>, <code>fn</code>, <code>self</code>, <code>match</code>, <code>yield</code>, <code>macro</code>, …</li>
+<li>記号: <code>[</code>, <code>:</code>, <code>::</code>, <code>?</code>, <code>~</code>, <code>@</code><sup class="footnote-reference"><a href="#wither-at">1</a></sup>, …</li>
+</ul>
+<!--
+…among others. There are some things to note about the above: first, `self` is both an identifier
+*and* a keyword. In almost all cases, `self` is a keyword, but it *is* possible for it to be
+*treated* as an identifier, which will come up later (along with much cursing). Secondly, the list
+of keywords includes some suspicious entries such as `yield` and `macro` that aren't *actually* in
+the language, but *are* parsed by the compiler—these are [reserved] for future use. Third, the list
+of symbols *also* includes entries that aren't used by the language. In the case of `<-`, it is
+vestigial: it was removed from the grammar, but not from the lexer. As a final point, note that
+`::` is a distinct token; it is not simply two adjacent `:` tokens. The same is true of all
+mult-character symbol tokens in Rust, as of Rust 1.2.[^two-lexers]
+-->
+<p>…など。上記において注意すべき点がいくつかあります。まず、<code>self</code>は識別子であり、<em>かつ</em>予約語でもあるということです。
+ほとんどすべての状況で<code>self</code>は予約語ですが、識別子として<em>扱われる</em>ことも<em>確かに</em>あるのです。これについては後述します(たくさんの呪詛とともに)。
+次に、予約語のリストは<code>yield</code>や<code>macro</code>といった怪しげな要素を含んでいます。これらは<em>実際</em>言語の一部ではないのですが、コンパイラは予約語として認識します—将来の利用のために<a href="https://doc.rust-lang.org/reference/keywords.html#reserved-keywords">予約されている</a>のです。
+<code>&lt;-</code>は「名残」です。文法からは削除されたものの、字句解析器には残っているのです。
+最後に、<code>::</code>が区別されたトークンであることに注意してください。<code>:</code>というトークンが2つ連続したものとは異なります。複数文字からなるすべての記号トークンについて同じことがいえます(Rust 1.2以降)。<sup class="footnote-reference"><a href="#two-lexers">2</a></sup></p>
+<!--
+[^wither-at]: `@` has a purpose, though most people seem to forget about it completely: it is used
+in patterns to bind a non-terminal part of the pattern to a name.
+-->
+<div class="footnote-definition" id="wither-at"><sup class="footnote-definition-label">1</sup>
+<p><code>@</code>には用途があるのですが、ほとんどの人は完全に忘れてしまっているようです: <code>@</code>はパターンの中で使い、パターンの非終端部分を名前に束縛します (<em>訳注</em>: 「パターンの非終端部分(non-terminal part of the pattern)」は、<a href="https://doc.rust-jp.rs/book-ja/ch18-03-pattern-syntax.html#%E6%9D%9F%E7%B8%9B">@束縛</a>においてマッチ条件を表すパターンの部分を指すものと思われる)。</p>
+</div>
+<!--
+[^two-lexers]: Technically rust currently(1.46) has two lexers, [`rustc_lexer`] which only emits
+single character symbols as tokens and the [lexer] in [`rustc_parse`] which sees multi-character
+symbols as distinct tokens.
+-->
+<div class="footnote-definition" id="two-lexers"><sup class="footnote-definition-label">2</sup>
+<p>技術的には、Rustは現時点(1.46)で2つの字句解析器を持ちます。単一文字の記号のみをトークンとして出力する<a href="https://github.com/rust-lang/rust/tree/master/compiler/rustc_lexer"><code>rustc_lexer</code></a>と、複数文字の記号を個別のトークンとみなす<a href="https://github.com/rust-lang/rust/tree/master/compiler/rustc_parse"><code>rustc_parse</code></a>内の<a href="https://github.com/rust-lang/rust/tree/master/compiler/rustc_parse/src/lexer">lexer</a>の2つです(<em>訳注</em>: 翻訳時点の最新版(1.67)においても同様)。</p>
+</div>
+<!--
+As a point of comparison, it is at *this* stage that some languages have their macro layer, though
+Rust does *not*. For example, C/C++ macros are *effectively* processed at this point.[^lies-damn-lies-cpp]
+-->
+<p>比較点として、まさにこの段階でマクロの展開を行う言語が存在する一方で、Rustはそうではありません。
+例えば、C/C++のマクロは<em>事実上</em>この時点で処理されます。<sup class="footnote-reference"><a href="#lies-damn-lies-cpp">3</a></sup></p>
+<!--
+This is why the following code works: [^cpp-it-seemed-like-a-good-idea-at-the-time]
+-->
+<p>次のコードが動作するのはこのためです。<sup class="footnote-reference"><a href="#cpp-it-seemed-like-a-good-idea-at-the-time">4</a></sup></p>
+<pre><code class="language-c">#define SUB void
+#define BEGIN {
+#define END }
+
+SUB main() BEGIN
+    printf(&quot;Oh, the horror!\n&quot;);
+END
+</code></pre>
+<!--
+[^lies-damn-lies-cpp]: In fact, the C preprocessor uses a different lexical structure to C itself,
+but the distinction is *broadly* irrelevant.
+-->
+<div class="footnote-definition" id="lies-damn-lies-cpp"><sup class="footnote-definition-label">3</sup>
+<p>実際のところ、CのプリプロセッサはC言語自体とは異なる字句構造を用いていますが、その違いは<em>ほとんど</em>重要ではありません。</p>
+</div>
+<!--
+[^cpp-it-seemed-like-a-good-idea-at-the-time]: *Whether* it should work is an entirely *different*
+question.
+-->
+<div class="footnote-definition" id="cpp-it-seemed-like-a-good-idea-at-the-time"><sup class="footnote-definition-label">4</sup>
+<p>これが動作<em>すべきか否か</em>というのは全く<em>別の</em>問題です。</p>
+</div>
+<!--
+### Parsing
+-->
+<h3 id="構文解析"><a class="header" href="#構文解析">構文解析</a></h3>
+<!--
+The next stage is parsing, where the stream of tokens is turned into an [Abstract Syntax Tree] (AST).
+This involves building up the syntactic structure of the program in memory. For example, the token
+sequence `1 + 2` is transformed into the equivalent of:
+-->
+<p>次の段階は構文解析で、これはトークンの列を<a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">抽象構文木</a>(Abstract Syntax Tree, AST)に変換します。
+これはプログラムの構文構造をメモリ上に構築する処理を伴います。例えば、トークン列<code>1 + 2</code>は次のようなものに変換されます:</p>
+<pre><code class="language-text">┌─────────┐   ┌─────────┐
+│ BinOp   │ ┌╴│ LitInt  │
+│ op: Add │ │ │ val: 1  │
+│ lhs: ◌  │╶┘ └─────────┘
+│ rhs: ◌  │╶┐ ┌─────────┐
+└─────────┘ └╴│ LitInt  │
+              │ val: 2  │
+              └─────────┘
+</code></pre>
+<!--
+The AST contains the structure of the *entire* program, though it is based on purely *lexical*
+information. For example, although the compiler may know that a particular expression is referring
+to a variable called `a`, at this stage, it has *no way* of knowing what `a` is, or even *where* it
+comes from.
+-->
+<p>抽象構文木はプログラム<em>全体</em>の構造を含みますが、それは<em>字句上の</em>情報のみに基づくものです。
+例えば、特定の式が<code>a</code>と呼ばれる変数を参照しているのをコンパイラが知っているとしても、<code>a</code>が何なのか、ひいてはそれが<em>どこから</em>やってきたのかを知る<em>術はありません</em>。</p>
+<!--
+It is *after* the AST has been constructed that macros are processed. However, before we can discuss
+that, we have to talk about token trees.
+-->
+<p>抽象構文木が構築された<em>後</em>、ついにマクロが処理されます。ですが、マクロの処理の考察に入る前に、トークン木について考えておかねばなりません。</p>
+<!--
+## Token trees
+-->
+<h2 id="トークン木-token-trees"><a class="header" href="#トークン木-token-trees">トークン木 (Token trees)</a></h2>
+<!--
+Token trees are somewhere between tokens and the AST. Firstly, *almost* all tokens are also token
+trees; more specifically, they are *leaves*. There is one other kind of thing that can be a token
+tree leaf, but we will come back to that later.
+-->
+<p>トークン木は、トークンと抽象構文木の中間に位置するものです。
+第一に、<em>ほとんど</em>すべてのトークンはトークン木でもあります。より正確にいえば、トークンは<em>葉</em>にあたります。
+もう一種類トークン木の葉になりうるものが存在しますが、それについては後述します。</p>
+<!--
+The only basic tokens that are *not* leaves are the "grouping" tokens: `(...)`, `[...]`, and `{...}`.
+These three are the *interior nodes* of token trees, and what give them their structure. To give a
+concrete example, this sequence of tokens:
+-->
+<p>基本的なトークンのうち唯一葉ではないのが、<code>(...)</code>, <code>[...]</code>, <code>{...}</code>といった「グループ化」トークンです。
+これらはトークン木の内部ノードにあたり、トークン木に構造をもたらすものです。具体的な例を挙げると、次のトークン列は…</p>
+<pre><code class="language-text">a + b + (c + d[0]) + e
+</code></pre>
+<!--
+would be parsed into the following token trees:
+-->
+<p>次のようなトークン木にパースされます:</p>
+<pre><code class="language-text">«a» «+» «b» «+» «(   )» «+» «e»
+          ╭────────┴──────────╮
+           «c» «+» «d» «[   ]»
+                        ╭─┴─╮
+                         «0»
+</code></pre>
+<!--
+Note that this has *no relationship* to the AST the expression would produce; instead of a single
+root node, there are *seven* token trees at the root level. For reference, the AST would be:
+-->
+<p>これは、この式が生成する抽象構文木とは<em>何の関連もない</em>ということに注意してください。
+1つの根ノードがあるのではなく、根のレベルに<em>7つの</em>トークン木があるのです。
+参考までに、この式の抽象構文木を載せておきます:</p>
+<pre><code class="language-text">              ┌─────────┐
+              │ BinOp   │
+              │ op: Add │
+            ┌╴│ lhs: ◌  │
+┌─────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
+│ Var     │╶┘ └─────────┘ └╴│ BinOp   │
+│ name: a │                 │ op: Add │
+└─────────┘               ┌╴│ lhs: ◌  │
+              ┌─────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
+              │ Var     │╶┘ └─────────┘ └╴│ BinOp   │
+              │ name: b │                 │ op: Add │
+              └─────────┘               ┌╴│ lhs: ◌  │
+                            ┌─────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
+                            │ BinOp   │╶┘ └─────────┘ └╴│ Var     │
+                            │ op: Add │                 │ name: e │
+                          ┌╴│ lhs: ◌  │                 └─────────┘
+              ┌─────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
+              │ Var     │╶┘ └─────────┘ └╴│ Index   │
+              │ name: c │               ┌╴│ arr: ◌  │
+              └─────────┘   ┌─────────┐ │ │ ind: ◌  │╶┐ ┌─────────┐
+                            │ Var     │╶┘ └─────────┘ └╴│ LitInt  │
+                            │ name: d │                 │ val: 0  │
+                            └─────────┘                 └─────────┘
+</code></pre>
+<!--
+It is important to understand the distinction between the AST and token trees. When writing macros,
+you have to deal with *both* as distinct things.
+-->
+<p>抽象構文木とトークン木の違いはよく理解しておいてください。マクロを書く際は、これらを別々のものとして、<em>両方とも</em>扱う必要があるのです。</p>
+<!--
+One other aspect of this to note: it is *impossible* to have an unpaired parenthesis, bracket or brace;
+nor is it possible to have incorrectly nested groups in a token tree.
+-->
+<p>もう一つ注意すべき点は、トークン木が組になっていない括弧、あるいはネスト構造がおかしいグループを含むことはないということです。</p>
+<!--
+[tokenization]: https://en.wikipedia.org/wiki/Lexical_analysis#Tokenization
+-->
+<!--
+[reserved]: https://doc.rust-lang.org/reference/keywords.html#reserved-keywords
+-->
+<!-- 
+[Abstract Syntax Tree] https://en.wikipedia.org/wiki/Abstract_syntax_tree
+-->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../syntax-extensions.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../syntax-extensions/ast.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../syntax-extensions.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../syntax-extensions/ast.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

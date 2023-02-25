@@ -1,0 +1,1904 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>実践的説明 - Rustマクロの薄い本</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../res/rust-syntax-bg-highlight.css">
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">はじめに</a></li><li class="chapter-item expanded "><a href="../syntax-extensions.html"><strong aria-hidden="true">1.</strong> 構文拡張</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../syntax-extensions/source-analysis.html"><strong aria-hidden="true">1.1.</strong> ソースコード解析</a></li><li class="chapter-item "><a href="../syntax-extensions/ast.html"><strong aria-hidden="true">1.2.</strong> ASTにおけるマクロ</a></li><li class="chapter-item "><a href="../syntax-extensions/expansion.html"><strong aria-hidden="true">1.3.</strong> 展開</a></li><li class="chapter-item "><a href="../syntax-extensions/hygiene.html"><strong aria-hidden="true">1.4.</strong> 衛生性</a></li><li class="chapter-item "><a href="../syntax-extensions/debugging.html"><strong aria-hidden="true">1.5.</strong> デバッグ</a></li></ol></li><li class="chapter-item expanded "><a href="../decl-macros.html"><strong aria-hidden="true">2.</strong> 宣言的マクロ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/macros-methodical.html"><strong aria-hidden="true">2.1.</strong> 体系的説明</a></li><li class="chapter-item expanded "><a href="../decl-macros/macros-practical.html" class="active"><strong aria-hidden="true">2.2.</strong> 実践的説明</a></li><li class="chapter-item "><a href="../decl-macros/minutiae.html"><strong aria-hidden="true">2.3.</strong> 枝葉末節</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/minutiae/fragment-specifiers.html"><strong aria-hidden="true">2.3.1.</strong> フラグメント指定子</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/metavar-and-expansion.html"><strong aria-hidden="true">2.3.2.</strong> Metavariables and Expansion Redux</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/metavar-expr.html"><strong aria-hidden="true">2.3.3.</strong> Metavariable Expressions</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/hygiene.html"><strong aria-hidden="true">2.3.4.</strong> Hygiene</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/identifiers.html"><strong aria-hidden="true">2.3.5.</strong> Non-Identifier Identifiers</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/debugging.html"><strong aria-hidden="true">2.3.6.</strong> Debugging</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/scoping.html"><strong aria-hidden="true">2.3.7.</strong> Scoping</a></li><li class="chapter-item "><a href="../decl-macros/minutiae/import-export.html"><strong aria-hidden="true">2.3.8.</strong> Import and Export</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/patterns.html"><strong aria-hidden="true">2.4.</strong> パターン</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/patterns/callbacks.html"><strong aria-hidden="true">2.4.1.</strong> Callbacks</a></li><li class="chapter-item "><a href="../decl-macros/patterns/tt-muncher.html"><strong aria-hidden="true">2.4.2.</strong> Incremental TT Munchers</a></li><li class="chapter-item "><a href="../decl-macros/patterns/internal-rules.html"><strong aria-hidden="true">2.4.3.</strong> Internal Rules</a></li><li class="chapter-item "><a href="../decl-macros/patterns/push-down-acc.html"><strong aria-hidden="true">2.4.4.</strong> Push-down Accumulation</a></li><li class="chapter-item "><a href="../decl-macros/patterns/repetition-replacement.html"><strong aria-hidden="true">2.4.5.</strong> Repetition Replacement</a></li><li class="chapter-item "><a href="../decl-macros/patterns/tt-bundling.html"><strong aria-hidden="true">2.4.6.</strong> TT Bundling</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/building-blocks.html"><strong aria-hidden="true">2.5.</strong> 構成要素</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/building-blocks/ast-coercion.html"><strong aria-hidden="true">2.5.1.</strong> AST Coercion</a></li><li class="chapter-item "><a href="../decl-macros/building-blocks/counting.html"><strong aria-hidden="true">2.5.2.</strong> Counting</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../decl-macros/building-blocks/abacus-counting.html"><strong aria-hidden="true">2.5.2.1.</strong> Abacus Counting</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/building-blocks/parsing.html"><strong aria-hidden="true">2.5.3.</strong> Parsing Rust</a></li></ol></li><li class="chapter-item "><a href="../decl-macros/macros2.html"><strong aria-hidden="true">2.6.</strong> マクロ2.0</a></li></ol></li><li class="chapter-item expanded "><a href="../proc-macros.html"><strong aria-hidden="true">3.</strong> Procedural Macros</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../proc-macros/methodical.html"><strong aria-hidden="true">3.1.</strong> A Methodical Introduction</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="../proc-macros/methodical/function-like.html"><strong aria-hidden="true">3.1.1.</strong> Function-like</a></li><li class="chapter-item "><a href="../proc-macros/methodical/attr.html"><strong aria-hidden="true">3.1.2.</strong> Attribute</a></li><li class="chapter-item "><a href="../proc-macros/methodical/derive.html"><strong aria-hidden="true">3.1.3.</strong> Derive</a></li></ol></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.</strong> A Practical Introduction</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.2.1.</strong> Function-like</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.2.</strong> Attribute</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.3.</strong> Derive</div></li></ol></li><li class="chapter-item "><a href="../proc-macros/third-party-crates.html"><strong aria-hidden="true">3.3.</strong> Third-Party Crates</a></li><li class="chapter-item "><a href="../proc-macros/hygiene.html"><strong aria-hidden="true">3.4.</strong> Hygiene and Spans</a></li><li class="chapter-item "><div><strong aria-hidden="true">3.5.</strong> Techniques</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.5.1.</strong> Testing</div></li></ol></li></ol></li><li class="chapter-item expanded "><a href="../glossary.html">用語集</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rustマクロの薄い本</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jiftechnify/tlborm-ja" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!--
+# Macros, A Practical Introduction
+-->
+<h1 id="マクロ-実践的説明"><a class="header" href="#マクロ-実践的説明">マクロ: 実践的説明</a></h1>
+<!--
+This chapter will introduce Rust's declarative [Macro-By-Example](https://doc.rust-lang.org/reference/macros-by-example.html) system using a relatively simple, practical example.
+It does *not* attempt to explain all of the intricacies of the system; its goal is to get you comfortable with how and why macros are written.
+-->
+<p>本章では、Rustの宣言的な<a href="https://doc.rust-lang.org/reference/macros-by-example.html">Macro-By-Example</a>のシステムについて、比較的シンプルで実践的な例を通して説明していきます。</p>
+<!--
+There is also the [Macros chapter of the Rust Book](https://doc.rust-lang.org/book/ch19-06-macros.html) which is another high-level explanation, and the [methodical introduction](../decl-macros.md) chapter of this book, which explains the macro system in detail.
+-->
+<p>高水準な視点からの説明としては、他にも<a href="https://doc.rust-lang.org/book/ch19-06-macros.html">The Rust Bookのマクロの章</a>があります。
+また本書の<a href="../decl-macros.html">形式的説明</a>の章では、このマクロシステムについて詳細に説明しています。</p>
+<!--
+## A Little Context
+-->
+<h2 id="背景を少し"><a class="header" href="#背景を少し">背景を少し</a></h2>
+<!--
+> **Note**: don't panic! What follows is the only math that will be talked about.
+> You can quite safely skip this section if you just want to get to the meat of the article.
+-->
+<blockquote>
+<p><strong>Note</strong>: 落ち着いて！ これに続くのはマクロの説明に関係するちょっとした数学の話です。
+早くこの章の本題に入りたいのであれば、この節を飛ばして読んでも大丈夫です。</p>
+</blockquote>
+<!--
+If you aren't familiar, a recurrence relation is a sequence where each value is defined in terms of one or more *previous* values, with one or more initial values to get the whole thing started.
+For example, the [Fibonacci sequence](https://en.wikipedia.org/wiki/Fibonacci_number) can be defined by the relation:
+-->
+<p>詳しくない方向けに説明すると、漸化式とは、各値が1つ以上<em>前の</em>値に基づいて定まる数列で、全ての始まりである1つ以上の初期値を伴います。
+例えば、<a href="https://en.wikipedia.org/wiki/Fibonacci_number">フィボナッチ数列</a><sup class="footnote-reference"><a href="#fib-wikipedia-ja">1</a></sup>は次の漸化式により定義されます:</p>
+<p>\[F_{n} = 0, 1, ..., F_{n-2} + F_{n-1}\]</p>
+<div class="footnote-definition" id="fib-wikipedia-ja"><sup class="footnote-definition-label">1</sup>
+<p><em>訳注</em>: 日本語版は<a href="https://en.wikipedia.org/wiki/Fibonacci_number">こちら</a>。</p>
+</div>
+<!--
+Thus, the first two numbers in the sequence are 0 and 1, with the third being \\( F_{0} + F_{1} = 0 + 1 = 1\\), the fourth \\( F_{1} + F_{2} = 1 + 1 = 2\\), and so on forever.
+-->
+<p>したがって、数列の最初の2つの数は 0 と 1、3番めは \( F_{0} + F_{1} = 0 + 1 = 1\)、 4番めは \( F_{1} + F_{2} = 1 + 1 = 2\)、という具合に無限に続きます。</p>
+<!--
+Now, *because* such a sequence can go on forever, that makes defining a `fibonacci` function a little tricky, since you obviously don't want to try returning a complete vector.
+What you *want* is to return something which will lazily compute elements of the sequence as needed.
+-->
+<p>さて、このような数列は無限に続く<em>ため</em>、<code>fibonacci</code> 関数を定義するのは少しややこしい作業になります。というのも、明らかに完全なベクタを返すべきではないからです。
+ここで<em>すべき</em>ことは、必要に応じて数列の要素を遅延的に計算する何かを返すことです。</p>
+<!--
+In Rust, that means producing an [`Iterator`].
+This is not especially *hard*, but there is a fair amount of boilerplate involved: you need to define a custom type, work out what state needs to be stored in it, then implement the [`Iterator`] trait for it.
+-->
+<p>Rustにおいて、これは<a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html"><code>Iterator</code></a>を生成せよ、ということです。
+これは特別難しいことではありませんが、かなりの量のボイラープレートを必要とします。独自の型を定義し、その型に保存すべき状態を考え出し、<a href="https://doc.rust-lang.org/std/iter/trait.Iterator.html"><code>Iterator</code></a>トレイトを実装する必要があります。</p>
+<!--
+However, recurrence relations are simple enough that almost all of these details can be abstracted out with a little `macro_rules!` macro-based code generation.
+-->
+<p>ですが、小さな<code>macro_rules!</code>マクロに基づくコード生成だけでこれらの詳細のほとんどを括りだすことができるくらい、漸化式はシンプルです。</p>
+<!--
+So, with all that having been said, let's get started.
+-->
+<p>それでは、以上のことを踏まえて、早速始めていきましょう。</p>
+<!--
+## Construction
+-->
+<h2 id="構成要素"><a class="header" href="#構成要素">構成要素</a></h2>
+<!--
+Usually, when working on a new `macro_rules!` macro, the first thing I do is decide what the invocation should look like.
+In this specific case, my first attempt looked like this:
+-->
+<p>たいてい、新しい <code>macro_rules!</code> マクロの実装に取りかかるとき、私が初めにするのはその呼び出し方を決めることです。
+今回のケースでは、最初の試行は次のようなものになりました:</p>
+<pre><code class="language-rust ignore">let fib = recurrence![a[n] = 0, 1, ..., a[n-2] + a[n-1]];
+
+for e in fib.take(10) { println!(&quot;{}&quot;, e) }</code></pre>
+<!--
+From that, we can take a stab at how the `macro_rules!` macro should be defined, even if we aren't sure of the actual expansion.
+This is useful because if you can't figure out how to parse the input syntax, then *maybe* you need to change it.
+-->
+<p>これをもとに、実際の展開形について確信は持てなくとも、<code>macro_rules!</code> マクロがどのように定義されるべきかを考えてみることはできます。
+入力の構文をパースする方法を思いつけないのであれば、構文を変更する必要があるかもしれないということなので、これは有用な考え方です。</p>
+<pre><code class="language-rust ignore">macro_rules! recurrence {
+    ( a[n] = $($inits:expr),+ , ... , $recur:expr ) =&gt; { /* ... */ };
+}
+<span class="boring">fn main() {}</span></code></pre>
+<!--
+Assuming you aren't familiar with the syntax, allow me to elucidate.
+This is defining a syntax extension, using the [`macro_rules!`] system, called `recurrence!`.
+This `macro_rules!` macro has a single parsing rule.
+That rule says the input to the invocation must match:
+-->
+<p>この構文は見慣れないものだと思いますので、少し説明させてください。
+これは <code>recurrence!</code> という名前の、<a href="./macros-methodical.html"><code>macro_rules!</code></a>のシステムを使った構文拡張の定義になります。
+この <code>macro_rules!</code> マクロはただ一つの構文ルールを持っています。
+そのルールは、呼び出しの入力が次のものに一致しなければならないというものです:</p>
+<!--
+- the literal token sequence `a` `[` `n` `]` `=`,
+- a [repeating] (the `$( ... )`) sequence, using `,` as a separator, and one or more (`+`) repeats of:
+    - a valid *expression* captured into the [metavariable] `inits` (`$inits:expr`)
+- the literal token sequence `,` `...` `,`,
+- a valid *expression* captured into the [metavariable] `recur` (`$recur:expr`).
+-->
+<ul>
+<li>リテラルトークンの列 <code>a</code> <code>[</code> <code>n</code> <code>]</code> <code>=</code></li>
+<li><code>,</code> を区切りとする、1回以上 (<code>+</code>) の妥当な<em>式</em>の<a href="./macros-methodical.html#repetitions">繰り返し</a> (<code>$( ... )</code>)。この式は<a href="./macros-methodical.html#metavariables">メタ変数</a> <code>inits</code> に捕捉される (<code>$inits:expr</code>)</li>
+<li>リテラルトークンの列 <code>,</code> <code>...</code> <code>,</code></li>
+<li>妥当な<em>式</em>。この式は<a href="./macros-methodical.html#metavariables">メタ変数</a> <code>recur</code> に捕捉される (<code>$recur:expr</code>)</li>
+</ul>
+<!--
+Finally, the rule says that *if* the input matches this rule, then the invocation should be replaced by the token sequence `/* ... */`.
+-->
+<p>結局、このルールは、<em>もし</em>入力がこのルールに一致したら、マクロの呼び出しを <code>/* ... */</code> というトークンの列で置き換えよ、ということを表しています。</p>
+<!--
+It's worth noting that `inits`, as implied by the name, actually contains *all* the expressions that match in this position, not just the first or last.
+What's more, it captures them *as a sequence* as opposed to, say, irreversibly pasting them all together.
+Also note that you can do "zero or more" with a repetition by using `*` instead of `+` and even optional, "zero or one" with `?`.
+-->
+<p><code>inits</code> は、その名前が示唆するように、最初や最後だけではなく、その位置にある<em>すべての</em>式を含むことに注意してください。
+さらにいえば、<code>inits</code> は、それらの式を不可逆的にまとめてペーストするような形ではなく、<em>列として</em>捕捉します。
+また、<code>+</code> の代わりに <code>*</code> を使えば「0回以上」の繰り返しを、<code>?</code>を使えば「任意」、つまり「0回か1回」の繰り返しを表せます。</p>
+<!--
+As an exercise, let's take the proposed input and feed it through the rule, to see how it is processed.
+The "Position" column will show which part of the syntax pattern needs to be matched against next, denoted by a "⌂".
+Note that in some cases, there might be more than one possible "next" element to match against.
+"Input" will contain all of the tokens that have *not* been consumed yet.
+`inits` and `recur` will contain the contents of those bindings.
+-->
+<p>練習として、先に挙げた入力をこのルールに与えてみて、どのように処理されるか見てみましょう。
+「位置」欄では、次に構文パターンのどの部分がマッチングされるかを「 ⌂ 」で示しています。
+ある状況では、マッチング対象となる「次」の要素の候補が複数存在することがあるのに注意してください。
+「入力」欄は、まだ消費されていないトークンです。
+<code>inits</code>・<code>recur</code> 欄はそれらに捕捉されている内容です。</p>
+<style type="text/css">
+    /* Customisations. */
+
+    .small-code code {
+        font-size: 70%;
+    }
+
+    .parse-table {
+        --table-width: 900px;
+        width: var(--table-width);
+        margin-left: calc((var(--content-max-width) - var(--table-width)) / 2);
+    }
+
+    table.parse-table code {
+        white-space: pre-wrap;
+        background-color: transparent;
+        border: none;
+    }
+
+    table.parse-table tbody>tr>td:nth-child(1)>code:nth-of-type(2) {
+        color: red;
+        margin-top: -0.7em;
+        margin-bottom: -0.6em;
+    }
+
+    table.parse-table tbody>tr>td:nth-child(1)>code {
+        display: block;
+    }
+
+    table.parse-table tbody>tr>td:nth-child(2)>code {
+        display: block;
+    }
+</style>
+<table class="parse-table">
+    <colgroup>
+        <col width="42%" />
+        <col width="30%" />
+        <col width="0%" />
+        <col width="18%" />
+    </colgroup>
+    <thead>
+        <tr>
+            <!--
+            <th>Position</th>
+            -->
+            <th>位置</th>
+            <!--
+            <th>Input</th>
+            -->
+            <th>入力</th>
+            <th><code>inits</code></th>
+            <th><code>recur</code></th>
+        </tr>
+    </thead>
+    <tbody class="small-code">
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>⌂</code>
+            </td>
+            <td><code>a[n] = 0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code> ⌂</code>
+            </td>
+            <td><code>[n] = 0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>  ⌂</code>
+            </td>
+            <td><code>n] = 0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>   ⌂</code>
+            </td>
+            <td><code>] = 0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>     ⌂</code>
+            </td>
+            <td><code>= 0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>       ⌂</code>
+            </td>
+            <td><code>0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>         ⌂</code>
+            </td>
+            <td><code>0, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>                     ⌂  ⌂</code>
+            </td>
+            <td><code>, 1, ..., a[n-2] + a[n-1]</code></td>
+            <td><code>0</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="font-size:.8em;">
+                <!--
+                <em>Note</em>: there are two ⌂ here, because the next input token might match <em>either</em> the comma
+                separator <em>between</em> elements in the repetition, <em>or</em> the comma <em>after</em> the
+                repetition. The macro system will keep track of both possibilities, until it is able to decide which one
+                to follow.
+                -->
+                <em>Note</em>: ここには2つの ⌂ がある。これは次の入力トークンが、繰り返しの要素<em>間</em>のコンマ区切り<em>か</em>、繰り返しの<em>後の</em>コンマの<em>どちらか</em>にマッチしうるため。
+                マクロシステムは、どちらに従うべきかが確定するまでの間、両方の可能性を追跡する。
+            </td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>         ⌂                ⌂</code>
+            </td>
+            <td><code>1, ..., a[n-2] + a[n-1]</code></td>
+            <td><code>0</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>                     ⌂  ⌂ <s>⌂</s></code>
+            </td>
+            <td><code>, ..., a[n-2] + a[n-1]</code></td>
+            <td><code>0</code>, <code>1</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="font-size:.8em;">
+                <!--
+                <em>Note</em>: the third, crossed-out marker indicates that the macro system has, as a consequence of
+                the last token consumed, eliminated one of the previous possible branches.
+                -->
+                <em>Note</em>: 3つめの取り消し線つきのマーカーは、最後のトークンの消費の結果、マクロシステムがありうる選択肢の1つをふるい落としたことを表す。
+            </td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>         ⌂                ⌂</code>
+            </td>
+            <td><code>..., a[n-2] + a[n-1]</code></td>
+            <td><code>0</code>, <code>1</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>         <s>⌂</s>                    ⌂</code>
+            </td>
+            <td><code>, a[n-2] + a[n-1]</code></td>
+            <td><code>0</code>, <code>1</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>                                ⌂</code>
+            </td>
+            <td><code>a[n-2] + a[n-1]</code></td>
+            <td><code>0</code>, <code>1</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>a[n] = $($inits:expr),+ , ... , $recur:expr</code>
+                <code>                                           ⌂</code>
+            </td>
+            <td></td>
+            <td><code>0</code>, <code>1</code></td>
+            <td><code>a[n-2] + a[n-1]</code></td>
+        </tr>
+        <tr>
+            <td colspan="4" style="font-size:.8em;">
+                <!--
+                <em>Note</em>: this particular step should make it clear that a binding like <tt>$recur:expr</tt> will
+                consume an <em>entire expression</em>, using the compiler's knowledge of what constitutes a valid
+                expression. As will be noted later, you can do this for other language constructs, too.
+                -->
+                <em>Note</em>: このステップは、コンパイラが持つ「妥当な式の構成要素」に関する知識を用いて、<tt>$recur:expr</tt>のような束縛が<em>式全体</em>を消費することを明確にする。
+                後述するように、他の言語要素に対してもこれを行うことができる。
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!--
+The key take-away from this is that the macro system will *try* to incrementally match the tokens provided as input to the macro against the provided rules.
+We'll come back to the "try" part.
+-->
+<p>ここで重要なのは、マクロシステムが、入力として与えられたトークンたちを所与のルールに対してインクリメンタルにマッチングを<em>試みる</em>ということです。
+「試みる」という部分については後で補足します。</p>
+<!--
+Now, let's begin writing the final, fully expanded form.
+For this expansion, I was looking for something like:
+-->
+<p>さて、最後の、完全に展開された形を書きはじめましょう。
+この展開に対しては、次のようなものが求められています:</p>
+<pre><code class="language-rust ignore">let fib = {
+    struct Recurrence {
+        mem: [u64; 2],
+        pos: usize,
+    }</code></pre>
+<!--
+This will be the actual iterator type.
+`mem` will be the memo buffer to hold the last few values so the recurrence can be computed.
+`pos` is to keep track of the value of `n`.
+-->
+<p>これは実際のイテレータ型になるべきものです。
+<code>mem</code> は漸化式を計算するのに必要となる、直近の数個の値を保持するメモバッファになります。
+<code>pos</code> は <code>n</code> の値を追跡するための変数です。</p>
+<!--
+> **Aside**: I've chosen `u64` as a "sufficiently large" type for the elements of this sequence.
+> Don't worry about how this will work out for *other* sequences; we'll come to it.
+-->
+<blockquote>
+<p><strong>余談</strong>: <code>u64</code> は、数列の要素を表すのに「十分大きな」型として選びました。
+これが<em>他の</em>数列に対して上手くいくかを心配する必要はありません。きっと上手くいきますよ。</p>
+</blockquote>
+<pre><code class="language-rust ignore">    impl Iterator for Recurrence {
+        type Item = u64;
+
+        fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+            if self.pos &lt; 2 {
+                let next_val = self.mem[self.pos];
+                self.pos += 1;
+                Some(next_val)</code></pre>
+<!--
+We need a branch to yield the initial values of the sequence; nothing tricky.
+-->
+<p>数列の初期値を生成する分岐が必要です。難しいところはないでしょう。</p>
+<pre><code class="language-rust ignore">            } else {
+                let a = /* something */;
+                let n = self.pos;
+                let next_val = a[n-2] + a[n-1];
+
+                self.mem.TODO_shuffle_down_and_append(next_val);
+
+                self.pos += 1;
+                Some(next_val)
+            }
+        }
+    }</code></pre>
+<!--
+This is a bit harder; we'll come back and look at *how* exactly to define `a`.
+Also, `TODO_shuffle_down_and_append` is another placeholder;
+I want something that places `next_val` on the end of the array, shuffling the rest down by one space, dropping the 0th element.
+-->
+<p>こちらはちょっと難しいです。<code>a</code>を厳密にどう定義するかについては、あとで見ていきます。
+<code>TODO_shuffle_down_and_append</code> も仮実装になっています。
+ここには、<code>next_val</code> を配列の末尾に配置し、残りの要素を1つずつずらし、最初の要素を削除するものが必要です。</p>
+<pre><code class="language-rust ignore">
+    Recurrence { mem: [0, 1], pos: 0 }
+};
+
+for e in fib.take(10) { println!(&quot;{}&quot;, e) }</code></pre>
+<!--
+Lastly, return an instance of our new structure, which can then be iterated over.
+To summarize, the complete expansion is:
+-->
+<p>最後に、この新しい構造体のインスタンスを返します。これに対して反復処理を行うことができます。
+まとめると、展開形の全容は以下のようになります:</p>
+<pre><code class="language-rust ignore">let fib = {
+    struct Recurrence {
+        mem: [u64; 2],
+        pos: usize,
+    }
+
+    impl Iterator for Recurrence {
+        type Item = u64;
+
+        fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+            if self.pos &lt; 2 {
+                let next_val = self.mem[self.pos];
+                self.pos += 1;
+                Some(next_val)
+            } else {
+                let a = /* something */;
+                let n = self.pos;
+                let next_val = (a[n-2] + a[n-1]);
+
+                self.mem.TODO_shuffle_down_and_append(next_val.clone());
+
+                self.pos += 1;
+                Some(next_val)
+            }
+        }
+    }
+
+    Recurrence { mem: [0, 1], pos: 0 }
+};
+
+for e in fib.take(10) { println!(&quot;{}&quot;, e) }</code></pre>
+<!--
+> **Aside**: Yes, this *does* mean we're defining a different `Recurrence` struct and its implementation for each invocation.
+> Most of this will optimise away in the final binary.
+-->
+<blockquote>
+<p><strong>余談</strong>: そう、これはマクロの呼び出しのたびに別の <code>Recurrence</code> 構造体とその実装を定義することを意味します。
+ほとんどの部分は最終的なバイナリ上では最適化されるでしょう。</p>
+</blockquote>
+<!--
+It's also useful to check your expansion as you're writing it.
+If you see anything in the expansion that needs to vary with the invocation, but *isn't* in the actual accepted syntax of our macro, you should work out where to introduce it.
+In this case, we've added `u64`, but that's not necessarily what the user wants, nor is it in the macro syntax. So let's fix that.
+-->
+<p>展開形を書きながら、それを見直すのも有用です。
+展開形の中に、呼び出しのたびに異なるべき何かがあって、それがマクロが実際に受け入れる構文の中に<em>ない</em>のであれば、それをどこに導入するか考える必要があります。
+今回の例では、<code>u64</code>を追加しましたが、それはユーザにとってもマクロ構文中にも必ずしも必要なものではありません。修正しましょう。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ , ... , $recur:expr ) =&gt; { /* ... */ };
+}
+
+/*
+let fib = recurrence![a[n]: u64 = 0, 1, ..., a[n-2] + a[n-1]];
+
+for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+*/
+<span class="boring">fn main() {}</span></code></pre></pre>
+<!--
+Here, I've added a new metavariable: `sty` which should be a type.
+-->
+<p>新たにメタ変数 <code>sty</code> を追加しました。これは型にマッチします。</p>
+<!--
+> **Aside**: if you're wondering, the bit after the colon in a metavariable can be one of several kinds of syntax matchers.
+> The most common ones are `item`, `expr`, and `ty`.
+> A complete explanation can be found in [Macros, A Methodical Introduction; `macro_rules!` (Matchers)](./macros-methodical.md#metavariables).
+>
+> There's one other thing to be aware of: in the interests of future-proofing the language, the compiler restricts what tokens you're allowed to put *after* a matcher, depending on what kind it is.
+> Typically, this comes up when trying to match expressions or statements;
+> those can *only* be followed by one of `=>`, `,`, and `;`.
+>
+> A complete list can be found in [Macros, A Methodical Introduction; Minutiae; Metavariables and Expansion Redux](./minutiae/metavar-and-expansion.md).
+-->
+<blockquote>
+<p><strong>余談</strong>: メタ変数のコロン以降の部分は、マッチする構文の種類を表します。
+よく使われるのは <code>item</code>, <code>expr</code>, そして <code>ty</code> です。
+詳しい説明は <a href="./macros-methodical.html#metavariables">「マクロ: 形式的説明」 の章の 「メタ変数」の項目</a>をご覧ください。</p>
+<p>もう一つ知っておくべきことがあります。言語の将来の変化に備える意味で、コンパイラはマッチパターンの種類に応じて、その<em>あとに</em>続けられるトークンの種類に制限を設けています。
+概して、これは式や文にマッチングさせようとしたときに問題になります。
+これらのあとに続けられるのは <code>=&gt;</code>, <code>,</code>, <code>;</code> <em>のみ</em>となります。</p>
+<p>完全なリストは<a href="./minutiae/metavar-and-expansion.html">「枝葉末節」の章の「メタ変数と展開・再考」の節</a>にあります。</p>
+</blockquote>
+<!--
+## Indexing and Shuffling
+-->
+<h2 id="添字付け-indexing-と入れ替え"><a class="header" href="#添字付け-indexing-と入れ替え">添字付け (indexing) と入れ替え</a></h2>
+<!--
+I will skim a bit over this part, since it's effectively tangential to the macro-related stuff.
+We want to make it so that the user can access previous values in the sequence by indexing `a`;
+we want it to act as a sliding window keeping the last few (in this case, 2) elements of the sequence.
+-->
+<p>マクロの話からそれることになるので、ここはさらっと流そうと思います。
+<code>a</code> に添字にアクセス機能をつけることで、ユーザが数列の前のほうの値にアクセスできるようにしたいです。
+これは、数列の直近の数個(今回の例では2個)の要素を保持するスライディングウィンドウのように動きます。</p>
+<!--
+We can do this pretty easily with a wrapper type:
+-->
+<p>ラッパー型によって、いとも簡単にこれを実現できます:</p>
+<pre><code class="language-rust ignore">struct IndexOffset&lt;'a&gt; {
+    slice: &amp;'a [u64; 2],
+    offset: usize,
+}
+
+impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+    type Output = u64;
+
+    fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b u64 {
+        use std::num::Wrapping;
+
+        let index = Wrapping(index);
+        let offset = Wrapping(self.offset);
+        let window = Wrapping(2);
+
+        let real_index = index - offset + window;
+        &amp;self.slice[real_index.0]
+    }
+}</code></pre>
+<!--
+> **Aside**: since lifetimes come up *a lot* with people new to Rust, a quick explanation: `'a` and `'b` are lifetime parameters that are used to track where a reference (*i.e.* a borrowed pointer to some data) is valid.
+> In this case, `IndexOffset` borrows a reference to our iterator's data, so it needs to keep track of how long it's allowed to hold that reference for, using `'a`.
+>
+> `'b` is used because the `Index::index` function (which is how subscript syntax is actually implemented) is *also* parameterized on a lifetime, on account of returning a borrowed reference.
+> `'a` and `'b` are not necessarily the same thing in all cases.
+> The borrow checker will make sure that even though we don't explicitly relate `'a` and `'b` to one another, we don't accidentally violate memory safety.
+-->
+<blockquote>
+<p><strong>余談</strong>: Rust初心者にとっては<em>多すぎる</em>数のライフタイムが出てきたので、簡単に説明しましょう。<code>'a</code> や  <code>'b</code> はライフタイムパラメータといい、参照(何らかのデータを指す借用されたポインタ)が有効な範囲を追跡するのに使われます。
+今回、<code>IndexOffset</code>は我々のイテレータのデータへの参照を借用しているので、<code>'a</code> を用いて <code>IndexOffset</code> がその参照をいつまで保持できるかを追跡する必要があります。</p>
+<p><code>'b</code> が用いられているのは、<code>Index::index</code> 関数 (添字記法 (subscript syntax) の実装本体) もまた、借用された参照を返すためにライフタイムによってパラメータ化されているためです。
+<code>'a</code> と <code>'b'</code> が常に同じである必要はありません。
+借用チェッカーは、我々が明示的に <code>'a</code> と <code>'b</code> をお互いと関連付けなくても、我々が誤ってメモリ安全性を侵害していないことを確かめてくれます。</p>
+</blockquote>
+<!--
+This changes the definition of `a` to:
+-->
+<p>これにより、<code>a</code>の定義は次のように変わります:</p>
+<pre><code class="language-rust ignore">let a = IndexOffset { slice: &amp;self.mem, offset: n };</code></pre>
+<!--
+The only remaining question is what to do about `TODO_shuffle_down_and_append`.
+I wasn't able to find a method in the standard library with exactly the semantics I wanted, but it isn't hard to do by hand.
+-->
+<p>唯一未解決なのは、<code>TODO_shuffle_down_and_append</code> をどうすべきかということです。
+標準ライブラリの中にそのものズバリの機能を持つメソッドは見つかりませんでしたが、自分で書くするのは特に難しくありません。</p>
+<pre><code class="language-rust ignore">{
+    use std::mem::swap;
+
+    let mut swap_tmp = next_val;
+    for i in (0..2).rev() {
+        swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+    }
+}</code></pre>
+<!--
+This swaps the new value into the end of the array, swapping the other elements down one space.
+-->
+<p>これは新しい値を配列の末尾要素と入れ替え、他の要素を1つずつ前に入れ替えていきます。</p>
+<!--
+> **Aside**: doing it this way means that this code will work for non-copyable types, as well.
+-->
+<blockquote>
+<p><strong>余談</strong>: このような方法をとることで、このコードはコピーできない型に対しても動作します。</p>
+</blockquote>
+<!--
+The working code thus far now looks like this:
+-->
+<p>現時点における、動くコードは以下のようになります:</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ , ... , $recur:expr ) =&gt; { /* ... */ };
+}
+
+fn main() {
+    /*
+    let fib = recurrence![a[n]: u64 = 0, 1, ..., a[n-2] + a[n-1]];
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+    */
+    let fib = {
+        use std::ops::Index;
+
+        struct Recurrence {
+            mem: [u64; 2],
+            pos: usize,
+        }
+
+        struct IndexOffset&lt;'a&gt; {
+            slice: &amp;'a [u64; 2],
+            offset: usize,
+        }
+
+        impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+            type Output = u64;
+
+            #[inline(always)]
+            fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b u64 {
+                use std::num::Wrapping;
+
+                let index = Wrapping(index);
+                let offset = Wrapping(self.offset);
+                let window = Wrapping(2);
+
+                let real_index = index - offset + window;
+                &amp;self.slice[real_index.0]
+            }
+        }
+
+        impl Iterator for Recurrence {
+            type Item = u64;
+
+            #[inline]
+            fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+                if self.pos &lt; 2 {
+                    let next_val = self.mem[self.pos];
+                    self.pos += 1;
+                    Some(next_val)
+                } else {
+                    let next_val = {
+                        let n = self.pos;
+                        let a = IndexOffset { slice: &amp;self.mem, offset: n };
+                        a[n-2] + a[n-1]
+                    };
+
+                    {
+                        use std::mem::swap;
+
+                        let mut swap_tmp = next_val;
+                        for i in [1,0] {
+                            swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                        }
+                    }
+
+                    self.pos += 1;
+                    Some(next_val)
+                }
+            }
+        }
+
+        Recurrence { mem: [0, 1], pos: 0 }
+    };
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+Note that I've changed the order of the declarations of `n` and `a`, as well as wrapped them(along with the recurrence expression) in a block.
+The reason for the first should be obvious(`n` needs to be defined first so I can use it for `a`).
+The reason for the second is that the borrowed reference `&self.mem` will prevent the swaps later on from happening (you cannot mutate something that is aliased elsewhere). The block ensures that the `&self.mem` borrow expires before then.
+-->
+<p><code>n</code> と <code>a</code> の宣言の順序が入れ替わっており、さらにそれらが(漸化式の計算式と一緒に)ブロックで囲まれていることに注意してください。
+前者の理由は明白でしょう(<code>n</code> を <code>a</code> の初期化で使うため)。
+後者の理由は、参照の借用 <code>&amp;self.mem</code> が、その後の入れ替え処理の実行を妨げてしまうためです(別の場所で借用された値を変更することはできません)。
+このブロックにより、<code>&amp;self.mem</code> の借用は入れ替え処理よりも前に失効するようになります。</p>
+<!--
+Incidentally, the only reason the code that does the `mem` swaps is in a block is to narrow the scope in which `std::mem::swap` is available, for the sake of being tidy.
+-->
+<p>ちなみに、<code>mem</code> swap を実行するコードをブロックで囲んでいるのは、コードの整頓の目的で、<code>std::mem::swap</code> が使えるスコープを限定するためでしかありません。</p>
+<!--
+If we take this code and run it, we get:
+-->
+<p>このコードを実行すると、次の結果が得られます:</p>
+<pre><code class="language-text">0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+</code></pre>
+<!--
+Success!
+Now, let's copy & paste this into the macro expansion, and replace the expanded code with an invocation.
+This gives us:
+-->
+<p>成功です！
+さて、これをマクロの展開形の部分にコピー &amp; ペーストして、展開結果のコードをマクロの呼び出しに置き換えてみましょう。
+次のようになります:</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ , ... , $recur:expr ) =&gt; {
+        {
+            /*
+                What follows here is *literally* the code from before,
+                cut and pasted into a new position. No other changes
+                have been made.
+            */
+
+            use std::ops::Index;
+
+            struct Recurrence {
+                mem: [u64; 2],
+                pos: usize,
+            }
+
+            struct IndexOffset&lt;'a&gt; {
+                slice: &amp;'a [u64; 2],
+                offset: usize,
+            }
+
+            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+                type Output = u64;
+
+                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b u64 {
+                    use std::num::Wrapping;
+
+                    let index = Wrapping(index);
+                    let offset = Wrapping(self.offset);
+                    let window = Wrapping(2);
+
+                    let real_index = index - offset + window;
+                    &amp;self.slice[real_index.0]
+                }
+            }
+
+            impl Iterator for Recurrence {
+                type Item = u64;
+
+                fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+                    if self.pos &lt; 2 {
+                        let next_val = self.mem[self.pos];
+                        self.pos += 1;
+                        Some(next_val)
+                    } else {
+                        let next_val = {
+                            let n = self.pos;
+                            let a = IndexOffset { slice: &amp;self.mem, offset: n };
+                            (a[n-2] + a[n-1])
+                        };
+
+                        {
+                            use std::mem::swap;
+
+                            let mut swap_tmp = next_val;
+                            for i in (0..2).rev() {
+                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                            }
+                        }
+
+                        self.pos += 1;
+                        Some(next_val)
+                    }
+                }
+            }
+
+            Recurrence { mem: [0, 1], pos: 0 }
+        }
+    };
+}
+
+fn main() {
+    let fib = recurrence![a[n]: u64 = 0, 1, ..., a[n-2] + a[n-1]];
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+Obviously, we aren't *using* the metavariables yet, but we can change that fairly easily.
+However, if we try to compile this, `rustc` aborts, telling us:
+-->
+<p>明らかに、まだメタ変数を<em>使っていません</em>が、メタ変数を使う形に変更するのはとても簡単です。
+しかし、これをコンパイルしようとすると、<code>rustc</code>は次のような文句を言って中断します:</p>
+<pre><code class="language-text">error: local ambiguity: multiple parsing options: built-in NTs expr ('inits') or 1 other option.
+  --&gt; src/main.rs:75:45
+   |
+75 |     let fib = recurrence![a[n]: u64 = 0, 1, ..., a[n-2] + a[n-1]];
+   |
+</code></pre>
+<!--
+Here, we've run into a limitation of the `macro_rules` system.
+The problem is that second comma.
+When it sees it during expansion, `macro_rules` can't decide if it's supposed to parse *another* expression for `inits`, or `...`.
+Sadly, it isn't quite clever enough to realise that `...` isn't a valid expression, so it gives up.
+Theoretically, this *should* work as desired, but currently doesn't.
+-->
+<p>ここで、我々は <code>macro_rules!</code>システムの限界に達してしまいました。
+問題となるのは2つめのコンマです。
+展開中にそのコンマを見た段階で、<code>macro_rules!</code> は次に <code>inits</code> のためのもう一つの式と、<code>...</code>  のどちらをパースすべきかを決めることができないのです。
+悲しいことに、<code>...</code> が妥当な式ではないと気づけるほど <code>macro_rules!</code> システムは賢くないので、諦めてしまいます。
+理論的には、これは思ったとおりに動作<em>すべき</em>ですが、現時点ではそうなっていません。</p>
+<!--
+> **Aside**: I *did* fib a little about how our rule would be interpreted by the macro system.
+> In general, it *should* work as described, but doesn't in this case.
+> The `macro_rules` machinery, as it stands, has its foibles, and its worthwhile remembering that on occasion, you'll need to contort a little to get it to work.
+>
+> In this *particular* case, there are two issues.
+> First, the macro system doesn't know what does and does not constitute the various grammar elements (*e.g.* an expression); that's the parser's job.
+> As such, it doesn't know that `...` isn't an expression.
+> Secondly, it has no way of trying to capture a compound grammar element (like an expression) without 100% committing to that capture.
+>
+> In other words, it can ask the parser to try and parse some input as an expression, but the parser will respond to any problems by aborting.
+> The only way the macro system can currently deal with this is to just try to forbid situations where this could be a problem.
+>
+> On the bright side, this is a state of affairs that exactly *no one* is enthusiastic about.
+> The `macro` keyword has already been reserved for a more rigorously-defined future [macro system](https://github.com/rust-lang/rust/issues/39412).
+> Until then, needs must.
+-->
+<blockquote>
+<p><strong>余談</strong>: 我々のルールがマクロシステムによってどのように解釈されるかについて、私は少し嘘をつきました。
+一般に、それは書いたように動く<em>べき</em>ですが、今回のような場合は動きません。
+現状、<code>macro_rules</code> の機構には弱点があり、うまく動くようにするためには形を少し歪める必要がある、ということを折に触れて思い出すとよいでしょう。</p>
+<p>今回の例においては、2つの問題があります。
+1つめは、マクロシステムが、多種多様な文法要素(<em>例</em>: 式)について、何が構成要素となり、何が構成要素となりえないのかに関する知識を持たないということです。これはパーサの仕事なのです。
+そのため、マクロシステムは <code>...</code> が式になりえないことを知りません。
+2つめは、(式のような)複合的な文法要素を捕捉しようとするには、それに100%身を捧げるしかないということです。</p>
+<p>言い換えると、マクロシステムはパーサに何らかの入力を式としてパースするよう依頼することができますが、パーサは任意の問題に対して「中断」という形で応える、ということです。
+現状、マクロシステムがこれに対処するための唯一の方法は、それが問題になるような状況を禁じることだけです。</p>
+<p>明るい面を挙げるとすれば、誰もこの事態について躍起にはなっていないということです。
+より綿密に定義された、未来の<a href="https://github.com/rust-lang/rust/issues/39412">マクロシステム</a>のために、<code>macro</code> というキーワードがすでに予約されています。
+これが使えるようになるまでは、やりたくなくてもそうするしかありません。</p>
+</blockquote>
+<!--
+Thankfully, the fix is relatively simple: we remove the comma from the syntax.
+To keep things balanced, we'll remove *both* commas around `...`:
+-->
+<p>ありがたいことに、修正は比較的シンプルに済みます。構文からコンマを取り除くのです。
+バランスを取るために、<code>...</code> の<em>両側</em>のコンマを取り除きましょう:</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ ... $recur:expr ) =&gt; {
+//                                     ^~~ changed
+        /* ... */
+<span class="boring">        // Cheat :D
+</span><span class="boring">        (vec![0u64, 1, 2, 3, 5, 8, 13, 21, 34]).into_iter()
+</span>    };
+}
+
+fn main() {
+    let fib = recurrence![a[n]: u64 = 0, 1 ... a[n-2] + a[n-1]];
+//                                         ^~~ changed
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+Success! ... or so we thought.
+Turns out this is being rejected by the compiler nowadays, while it was fine back when this was written.
+The reason for this is that the compiler now recognizes the `...` as a token, and as we know we may only use `=>`, `,` or `;` after an expression fragment.
+So unfortunately we are now out of luck as our dreamed up syntax will not work out this way, so let us just choose one that looks the most befitting that we are allowed to use instead, I'd say replacing `,` with `;` works.
+-->
+<p>やったか！？と思いきや…
+以前は問題なかったにもかかわらず、これはコンパイラによって拒否されてしまいます。
+理由は、コンパイラは今 <code>...</code> をトークンとして認識するようになり、ご存知のように式フラグメントの後ろでは <code>=&gt;</code>, <code>,</code> または <code>;</code> しか使えないためです。
+よって、残念ながら我々が夢見た構文は動作しません。運は尽きました。代わりに使える中で、最も相応しいものを選びましょう。<code>,</code> を <code>;</code> に書き換えます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+//                                     ^~~~~~^ changed
+        /* ... */
+<span class="boring">        // Cheat :D
+</span><span class="boring">        (vec![0u64, 1, 2, 3, 5, 8, 13, 21, 34]).into_iter()
+</span>    };
+}
+
+fn main() {
+    let fib = recurrence![a[n]: u64 = 0, 1; ...; a[n-2] + a[n-1]];
+//                                        ^~~~~^ changed
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+Success! But for real this time.
+-->
+<p>やりました！今回は本当に成功です。</p>
+<!--
+### Substitution
+-->
+<h3 id="置換"><a class="header" href="#置換">置換</a></h3>
+<!--
+Substituting something you've captured in a macro is quite simple; you can insert the contents of a metavariable `$sty:ty` by using `$sty`.
+So, let's go through and fix the `u64`s:
+-->
+<p>マクロによって捕捉したものを使って置換を行うのはとても簡単です。メタ変数 <code>$sty:ty</code> の中身を <code>$ty</code> を使って挿入できます。
+では、<code>u64</code> を直していきましょう:</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+        {
+            use std::ops::Index;
+
+            struct Recurrence {
+                mem: [$sty; 2],
+//                    ^~~~ changed
+                pos: usize,
+            }
+
+            struct IndexOffset&lt;'a&gt; {
+                slice: &amp;'a [$sty; 2],
+//                          ^~~~ changed
+                offset: usize,
+            }
+
+            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+                type Output = $sty;
+//                            ^~~~ changed
+
+                #[inline(always)]
+                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b $sty {
+//                                                          ^~~~ changed
+                    use std::num::Wrapping;
+
+                    let index = Wrapping(index);
+                    let offset = Wrapping(self.offset);
+                    let window = Wrapping(2);
+
+                    let real_index = index - offset + window;
+                    &amp;self.slice[real_index.0]
+                }
+            }
+
+            impl Iterator for Recurrence {
+                type Item = $sty;
+//                          ^~~~ changed
+
+                #[inline]
+                fn next(&amp;mut self) -&gt; Option&lt;$sty&gt; {
+//                                           ^~~~ changed
+                    /* ... */
+<span class="boring">                    if self.pos &lt; 2 {
+</span><span class="boring">                        let next_val = self.mem[self.pos];
+</span><span class="boring">                        self.pos += 1;
+</span><span class="boring">                        Some(next_val)
+</span><span class="boring">                    } else {
+</span><span class="boring">                        let next_val = {
+</span><span class="boring">                            let n = self.pos;
+</span><span class="boring">                            let a = IndexOffset { slice: &amp;self.mem, offset: n };
+</span><span class="boring">                            (a[n-2] + a[n-1])
+</span><span class="boring">                        };
+</span><span class="boring">
+</span><span class="boring">                        {
+</span><span class="boring">                            use std::mem::swap;
+</span><span class="boring">
+</span><span class="boring">                            let mut swap_tmp = next_val;
+</span><span class="boring">                            for i in (0..2).rev() {
+</span><span class="boring">                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+</span><span class="boring">                            }
+</span><span class="boring">                        }
+</span><span class="boring">
+</span><span class="boring">                        self.pos += 1;
+</span><span class="boring">                        Some(next_val)
+</span><span class="boring">                    }
+</span>                }
+            }
+
+            Recurrence { mem: [0, 1], pos: 0 }
+        }
+    };
+}
+
+fn main() {
+    let fib = recurrence![a[n]: u64 = 0, 1; ...; a[n-2] + a[n-1]];
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+Let's tackle a harder one: how to turn `inits` into both the array literal `[0, 1]` *and* the array type, `[$sty; 2]`.
+The first one we can do like so:
+-->
+<p>もっと難しいことに挑戦してみましょう。<code>inits</code> を配列リテラル <code>[0, 1]</code> <em>と</em> 配列の型 <code>[$sty; 2]</code> の両方に変換するにはどうすればよいでしょう。
+最初にできるのはこんな感じのことです:</p>
+<pre><code class="language-rust ignore">            Recurrence { mem: [$($inits),+], pos: 0 }
+//                             ^~~~~~~~~~~ changed</code></pre>
+<!--
+This effectively does the opposite of the capture: repeat `inits` one or more times, separating each with a comma.
+This expands to the expected sequence of tokens: `0, 1`.
+-->
+<p>これは実質的にキャプチャと逆のことをしています。コンマで区切りつつ、<code>inits</code>を1回以上繰り返すのです。
+これは期待されているトークン列 <code>0, 1</code> に展開されます。</p>
+<!--
+Somehow turning `inits` into a literal `2` is a little trickier.
+It turns out that there's no direct way to do this, but we *can* do it by using a second `macro_rules!` macro.
+Let's take this one step at a time.
+-->
+<p><code>inits</code> を リテラル <code>2</code> にするのは少し大変そうです。
+結局のところこれを直接行う方法はないのですが、もう一つの <code>macro_rules!</code> マクロを使えば可能です。
+一歩ずつ進んでいきましょう。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    /* ??? */
+<span class="boring">    () =&gt; {}
+</span>}
+<span class="boring">fn main() {}</span></code></pre></pre>
+<!--
+The obvious case is: given zero expressions, you would expect `count_exprs` to expand to a literal
+`0`.
+-->
+<p>自明なケースである、0個の式が与えられたときは、 <code>count_exprs</code> は リテラル <code>0</code> に展開されるべきです。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+//  ^~~~~~~~~~ added
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+> **Aside**: You may have noticed I used parentheses here instead of curly braces for the expansion.
+> `macro_rules` really doesn't care *what* you use, so long as it's one of the "matcher" pairs: `( )`, `{ }` or `[ ]`.
+> In fact, you can switch out the matchers on the macro itself(*i.e.* the matchers right after the macro name), the matchers around the syntax rule, and the matchers around the corresponding expansion.
+>
+> You can also switch out the matchers used when you *invoke* a macro, but in a more limited fashion: a macro invoked as `{ ... }` or `( ... );` will *always* be parsed as an *item* (*i.e.* like a `struct` or `fn` declaration).
+> This is important when using macros in a function body; it helps disambiguate between "parse like an expression" and "parse like a statement".
+-->
+<blockquote>
+<p><strong>余談</strong>: 式を囲むために、波かっこの代わりに丸かっこを使ったことに気づいた方がいるかもしれません。
+<code>macro_rules</code> は、かっこが一致している限りは、どのかっこを使おうがまったく気にしません。
+実際、マクロ自体のかっこ(マクロ名のすぐ右にあるもの)、構文ルールを囲むかっこ、そしてそれに対応する展開形を囲むかっこを好きに切り替えることができます。</p>
+<p>マクロを呼び出す際に使うかっこを切り替えることもできますが、この場合少し制限が強くなります。<code>{ ... }</code> または <code>( ... );</code> という形で呼び出されたマクロは<em>常に</em>アイテム(<code>struct</code> や <code>fn</code> の宣言のようなもの)としてパースされます。
+これはマクロを関数の本体の中で使うときに重要になります。「式のようにパース」するか「文のようにパース」するかをはっきりさせるのに役立ちます。</p>
+</blockquote>
+<!--
+What if you have *one* expression?
+That should be a literal `1`.
+-->
+<p>式が<em>1つ</em>の場合はどうでしょうか？
+それはリテラル <code>1</code> に展開されるべきです。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($e:expr) =&gt; (1);
+//  ^~~~~~~~~~~~~~~~~ added
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    const _1: usize = count_exprs!(x);
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">    assert_eq!(_1, 1);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+Two?
+-->
+<p>2つなら？</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($e:expr) =&gt; (1);
+    ($e0:expr, $e1:expr) =&gt; (2);
+//  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ added
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    const _1: usize = count_exprs!(x);
+</span><span class="boring">    const _2: usize = count_exprs!(x, y);
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">    assert_eq!(_1, 1);
+</span><span class="boring">    assert_eq!(_2, 2);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+We can "simplify" this a little by re-expressing the case of two expressions recursively.
+-->
+<p>式が2つの場合を再帰的に表しなおすことで、これを「単純化」できます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($e:expr) =&gt; (1);
+    ($e0:expr, $e1:expr) =&gt; (1 + count_exprs!($e1));
+//                           ^~~~~~~~~~~~~~~~~~~~~ changed
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    const _1: usize = count_exprs!(x);
+</span><span class="boring">    const _2: usize = count_exprs!(x, y);
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">    assert_eq!(_1, 1);
+</span><span class="boring">    assert_eq!(_2, 2);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+This is fine since Rust can fold `1 + 1` into a constant value.
+What if we have three expressions?
+-->
+<p>Rustは <code>1 + 1</code> を定数値に畳み込むので、問題ありません。
+式が3つならどうでしょうか？</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($e:expr) =&gt; (1);
+    ($e0:expr, $e1:expr) =&gt; (1 + count_exprs!($e1));
+    ($e0:expr, $e1:expr, $e2:expr) =&gt; (1 + count_exprs!($e1, $e2));
+//  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ added
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    const _1: usize = count_exprs!(x);
+</span><span class="boring">    const _2: usize = count_exprs!(x, y);
+</span><span class="boring">    const _3: usize = count_exprs!(x, y, z);
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">    assert_eq!(_1, 1);
+</span><span class="boring">    assert_eq!(_2, 2);
+</span><span class="boring">    assert_eq!(_3, 3);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+> **Aside**: You might be wondering if we could reverse the order of these rules.
+> In this particular case, *yes*, but the macro system can sometimes be picky about what it is and is not willing to recover from.
+> If you ever find yourself with a multi-rule macro that you *swear* should work, but gives you errors about unexpected tokens, try changing the order of the rules.
+-->
+<blockquote>
+<p><strong>余談</strong>: もしルールの順序を逆にしたとしても問題ないのだろうか、と思った方がいるかもしれません。
+今回の例に限っていえば、問題ありません。しかし、マクロシステムは時にルールの順序にうるさくなり、なかなか言うことを聞かなくなることがあります。
+間違いなく動くはずだと思っていた複数のルールを持つマクロが、「予期しないトークン(unexpected tokens)」というエラーを出すようであれば、ルールの順序を変えてみましょう。</p>
+</blockquote>
+<!--
+Hopefully, you can see the pattern here.
+We can always reduce the list of expressions by matching one expression, followed by zero or more expressions, expanding that into 1 + a count.
+-->
+<p>パターンが見えてきたのではないでしょうか。
+1つの式とそれに続く0個以上の式にマッチングさせ、1 + (残りのカウント) の形に展開することで、式のリストを畳み込む(reduce)ことができます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($head:expr) =&gt; (1);
+    ($head:expr, $($tail:expr),*) =&gt; (1 + count_exprs!($($tail),*));
+//  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ changed
+}
+<span class="boring">fn main() {
+</span><span class="boring">    const _0: usize = count_exprs!();
+</span><span class="boring">    const _1: usize = count_exprs!(x);
+</span><span class="boring">    const _2: usize = count_exprs!(x, y);
+</span><span class="boring">    const _3: usize = count_exprs!(x, y, z);
+</span><span class="boring">    assert_eq!(_0, 0);
+</span><span class="boring">    assert_eq!(_1, 1);
+</span><span class="boring">    assert_eq!(_2, 2);
+</span><span class="boring">    assert_eq!(_3, 3);
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+> **<abbr title="Just for this example">JFTE</abbr>**: this is not the *only*, or even the *best* way of counting things.
+> You may wish to peruse the [Counting](./building-blocks/counting.md) section later for a more efficient way.
+-->
+<blockquote>
+<p><strong><abbr title="Just for this example()">JFTE</abbr></strong>: これはものを数えるための<em>唯一の</em>方法でも、<em>最良の</em>方法でもありません。
+より効率的な方法を知るには、<a href="./building-blocks/counting.html">数を数える</a>の節をよく読むとよいでしょう。</p>
+</blockquote>
+<!--
+With this, we can now modify `recurrence` to determine the necessary size of `mem`.
+-->
+<p>これを使って、<code>recurrence</code> を変更し、<code>mem</code> に必要なサイズを割り出すようにできます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021">// added:
+macro_rules! count_exprs {
+    () =&gt; (0);
+    ($head:expr) =&gt; (1);
+    ($head:expr, $($tail:expr),*) =&gt; (1 + count_exprs!($($tail),*));
+}
+
+macro_rules! recurrence {
+    ( a[n]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+        {
+            use std::ops::Index;
+
+            const MEM_SIZE: usize = count_exprs!($($inits),+);
+//          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ added
+
+            struct Recurrence {
+                mem: [$sty; MEM_SIZE],
+//                          ^~~~~~~~ changed
+                pos: usize,
+            }
+
+            struct IndexOffset&lt;'a&gt; {
+                slice: &amp;'a [$sty; MEM_SIZE],
+//                                ^~~~~~~~ changed
+                offset: usize,
+            }
+
+            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+                type Output = $sty;
+
+                #[inline(always)]
+                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b $sty {
+                    use std::num::Wrapping;
+
+                    let index = Wrapping(index);
+                    let offset = Wrapping(self.offset);
+                    let window = Wrapping(MEM_SIZE);
+//                                        ^~~~~~~~ changed
+
+                    let real_index = index - offset + window;
+                    &amp;self.slice[real_index.0]
+                }
+            }
+
+            impl Iterator for Recurrence {
+                type Item = $sty;
+
+                #[inline]
+                fn next(&amp;mut self) -&gt; Option&lt;$sty&gt; {
+                    if self.pos &lt; MEM_SIZE {
+//                                ^~~~~~~~ changed
+                        let next_val = self.mem[self.pos];
+                        self.pos += 1;
+                        Some(next_val)
+                    } else {
+                        let next_val = {
+                            let n = self.pos;
+                            let a = IndexOffset { slice: &amp;self.mem, offset: n };
+                            (a[n-2] + a[n-1])
+                        };
+
+                        {
+                            use std::mem::swap;
+
+                            let mut swap_tmp = next_val;
+                            for i in (0..MEM_SIZE).rev() {
+//                                       ^~~~~~~~ changed
+                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                            }
+                        }
+
+                        self.pos += 1;
+                        Some(next_val)
+                    }
+                }
+            }
+
+            Recurrence { mem: [$($inits),+], pos: 0 }
+        }
+    };
+}
+/* ... */
+<span class="boring">
+</span><span class="boring">fn main() {
+</span><span class="boring">    let fib = recurrence![a[n]: u64 = 0, 1; ...; a[n-2] + a[n-1]];
+</span><span class="boring">
+</span><span class="boring">    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+With that done, we can now substitute the last thing: the `recur` expression.
+-->
+<p><code>inits</code> の置換はこれで完成したので、ついに最後の <code>recur</code> 式の置換に移れます。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">macro_rules! count_exprs {
+</span><span class="boring">    () =&gt; (0);
+</span><span class="boring">    ($head:expr $(, $tail:expr)*) =&gt; (1 + count_exprs!($($tail),*));
+</span><span class="boring">}
+</span><span class="boring">macro_rules! recurrence {
+</span><span class="boring">    ( a[n]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+</span><span class="boring">        {
+</span><span class="boring">            use std::ops::Index;
+</span><span class="boring">
+</span><span class="boring">            const MEM_SIZE: usize = count_exprs!($($inits),+);
+</span><span class="boring">            struct Recurrence {
+</span><span class="boring">                mem: [$sty; MEM_SIZE],
+</span><span class="boring">                pos: usize,
+</span><span class="boring">            }
+</span><span class="boring">            struct IndexOffset&lt;'a&gt; {
+</span><span class="boring">                slice: &amp;'a [$sty; MEM_SIZE],
+</span><span class="boring">                offset: usize,
+</span><span class="boring">            }
+</span><span class="boring">            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+</span><span class="boring">                type Output = $sty;
+</span><span class="boring">
+</span><span class="boring">                #[inline(always)]
+</span><span class="boring">                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b $sty {
+</span><span class="boring">                    use std::num::Wrapping;
+</span><span class="boring">
+</span><span class="boring">                    let index = Wrapping(index);
+</span><span class="boring">                    let offset = Wrapping(self.offset);
+</span><span class="boring">                    let window = Wrapping(MEM_SIZE);
+</span><span class="boring">
+</span><span class="boring">                    let real_index = index - offset + window;
+</span><span class="boring">                    &amp;self.slice[real_index.0]
+</span><span class="boring">                }
+</span><span class="boring">            }
+</span><span class="boring">            impl Iterator for Recurrence {
+</span><span class="boring">              type Item = $sty;
+</span>/* ... */
+                #[inline]
+                fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+                    if self.pos &lt; MEM_SIZE {
+                        let next_val = self.mem[self.pos];
+                        self.pos += 1;
+                        Some(next_val)
+                    } else {
+                        let next_val = {
+                            let n = self.pos;
+                            let a = IndexOffset { slice: &amp;self.mem, offset: n };
+                            $recur
+//                          ^~~~~~ changed
+                        };
+                        {
+                            use std::mem::swap;
+                            let mut swap_tmp = next_val;
+                            for i in (0..MEM_SIZE).rev() {
+                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                            }
+                        }
+                        self.pos += 1;
+                        Some(next_val)
+                    }
+                }
+/* ... */
+<span class="boring">            }
+</span><span class="boring">            Recurrence { mem: [$($inits),+], pos: 0 }
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">}
+</span><span class="boring">fn main() {
+</span><span class="boring">    let fib = recurrence![a[n]: u64 = 1, 1; ...; a[n-2] + a[n-1]];
+</span><span class="boring">    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+</span><span class="boring">}</span></code></pre></pre>
+<!--
+And, when we compile our finished `macro_rules!` macro...
+--->
+<p>そして、完成した <code>macro_rules!</code> マクロをコンパイルすると...</p>
+<pre><code class="language-text">error[E0425]: cannot find value `a` in this scope
+  --&gt; src/main.rs:68:50
+   |
+68 |     let fib = recurrence![a[n]: u64 = 1, 1; ...; a[n-2] + a[n-1]];
+   |                                                  ^ not found in this scope
+
+error[E0425]: cannot find value `n` in this scope
+  --&gt; src/main.rs:68:52
+   |
+68 |     let fib = recurrence![a[n]: u64 = 1, 1; ...; a[n-2] + a[n-1]];
+   |                                                    ^ not found in this scope
+
+error[E0425]: cannot find value `a` in this scope
+  --&gt; src/main.rs:68:59
+   |
+68 |     let fib = recurrence![a[n]: u64 = 1, 1; ...; a[n-2] + a[n-1]];
+   |                                                           ^ not found in this scope
+
+error[E0425]: cannot find value `n` in this scope
+  --&gt; src/main.rs:68:61
+   |
+68 |     let fib = recurrence![a[n]: u64 = 1, 1; ...; a[n-2] + a[n-1]];
+   |                                                             ^ not found in this scope
+</code></pre>
+<!--
+... wait, what?
+That can't be right... let's check what the macro is expanding to.
+-->
+<p>... 待て、何だって？
+そんなはずは... マクロがどう展開されているか確かめてみましょう。</p>
+<pre><code class="language-shell">$ rustc +nightly -Zunpretty=expanded recurrence.rs
+</code></pre>
+<!--
+The `-Zunpretty=expanded` argument tells `rustc` to perform macro expansion, then turn the resulting AST back into source code.
+The output (after cleaning up some formatting) is shown below;
+in particular, note the place in the code where `$recur` was substituted:
+-->
+<p><code>-Zunpretty=expanded</code> 引数は <code>rustc</code> にマクロの展開を行うように伝え、それから結果の抽象構文木をソースコードに戻します。
+出力(フォーマット整理済)を以下に示します。
+特に、<code>$recur</code> が置換された箇所に注意してみましょう。</p>
+<pre><code class="language-rust ignore">#![feature(no_std)]
+#![no_std]
+#[prelude_import]
+use std::prelude::v1::*;
+#[macro_use]
+extern crate std as std;
+fn main() {
+    let fib = {
+        use std::ops::Index;
+        const MEM_SIZE: usize = 1 + 1;
+        struct Recurrence {
+            mem: [u64; MEM_SIZE],
+            pos: usize,
+        }
+        struct IndexOffset&lt;'a&gt; {
+            slice: &amp;'a [u64; MEM_SIZE],
+            offset: usize,
+        }
+        impl &lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+            type Output = u64;
+            #[inline(always)]
+            fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b u64 {
+                use std::num::Wrapping;
+                let index = Wrapping(index);
+                let offset = Wrapping(self.offset);
+                let window = Wrapping(MEM_SIZE);
+                let real_index = index - offset + window;
+                &amp;self.slice[real_index.0]
+            }
+        }
+        impl Iterator for Recurrence {
+            type Item = u64;
+            #[inline]
+            fn next(&amp;mut self) -&gt; Option&lt;u64&gt; {
+                if self.pos &lt; MEM_SIZE {
+                    let next_val = self.mem[self.pos];
+                    self.pos += 1;
+                    Some(next_val)
+                } else {
+                    let next_val = {
+                        let n = self.pos;
+                        let a = IndexOffset{slice: &amp;self.mem, offset: n,};
+                        a[n - 1] + a[n - 2]
+                    };
+                    {
+                        use std::mem::swap;
+                        let mut swap_tmp = next_val;
+                        {
+                            let result =
+                                match ::std::iter::IntoIterator::into_iter((0..MEM_SIZE).rev()) {
+                                    mut iter =&gt; loop {
+                                        match ::std::iter::Iterator::next(&amp;mut iter) {
+                                            ::std::option::Option::Some(i) =&gt; {
+                                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                                            }
+                                            ::std::option::Option::None =&gt; break,
+                                        }
+                                    },
+                                };
+                            result
+                        }
+                    }
+                    self.pos += 1;
+                    Some(next_val)
+                }
+            }
+        }
+        Recurrence{mem: [0, 1], pos: 0,}
+    };
+    {
+        let result =
+            match ::std::iter::IntoIterator::into_iter(fib.take(10)) {
+                mut iter =&gt; loop {
+                    match ::std::iter::Iterator::next(&amp;mut iter) {
+                        ::std::option::Option::Some(e) =&gt; {
+                            ::std::io::_print(::std::fmt::Arguments::new_v1(
+                                {
+                                    static __STATIC_FMTSTR: &amp;'static [&amp;'static str] = &amp;[&quot;&quot;, &quot;\n&quot;];
+                                    __STATIC_FMTSTR
+                                },
+                                &amp;match (&amp;e,) {
+                                    (__arg0,) =&gt; [::std::fmt::ArgumentV1::new(__arg0, ::std::fmt::Display::fmt)],
+                                }
+                            ))
+                        }
+                        ::std::option::Option::None =&gt; break,
+                    }
+                },
+            };
+        result
+    }
+}</code></pre>
+<!--
+But that looks fine!
+If we add a few missing `#![feature(...)]` attributes and feed it to a nightly build of `rustc`, it even compiles!  ... *what?!*
+-->
+<p>それでもやはり問題ないように見えます！
+いくつか不足している <code>#![feature(...)]</code> 属性を追加して、<code>rustc</code> のnightlyビルドに食わせると、なんとコンパイルが通ります！ ... <em>何だって？！</em></p>
+<!--
+> **Aside**: You can't compile the above with a non-nightly build of `rustc`.
+> This is because the expansion of the `println!` macro depends on internal compiler details which are *not* publicly stabilized.
+-->
+<blockquote>
+<p><strong>余談</strong>: 上のコードはnightlyビルドでない <code>rustc</code> ではコンパイルできません。
+これは <code>println!</code> マクロの展開形が、公に標準化されて<em>いない</em>コンパイラの内部詳細に依存しているためです。</p>
+</blockquote>
+<!--
+### Being Hygienic
+-->
+<h3 id="衛生的に行こう"><a class="header" href="#衛生的に行こう">衛生的に行こう</a></h3>
+<!--
+The issue here is that identifiers in Rust syntax extensions are *hygienic*.
+That is, identifiers from two different contexts *cannot* collide.
+To show the difference, let's take a simpler example.
+-->
+<p>ここでの問題は、Rustの構文拡張において識別子が<em>衛生的</em>(hygienic)であるということです。
+つまり、2つの別のコンテキストからくる識別子は衝突<em>しえない</em>ということです。
+違いを示すため、もっと単純な例を見てみましょう。</p>
+<pre><code class="language-rust ignore">macro_rules! using_a {
+    ($e:expr) =&gt; {
+        {
+            let a = 42i;
+            $e
+        }
+    }
+}
+
+let four = using_a!(a / 10);
+<span class="boring">fn main() {}</span></code></pre>
+<!--
+This macro simply takes an expression, then wraps it in a block with a variable `a` defined.
+We then use this as a round-about way of computing `4`.
+There are actually *two* syntax contexts involved in this example, but they're invisible.
+So, to help with this, let's give each context a different colour.
+Let's start with the unexpanded code, where there is only a single context:
+-->
+<p>このマクロは単に、式をとって、それを変数 <code>a</code> が定義されたブロックに包みます。
+これを、 <code>4</code> を計算するための回りくどい方法として使います。
+実はこの例には<em>2つの</em>構文コンテキストが含まれていますが、それらは目に見えません。
+そこで、見分けがつくように、それぞれのコンテキストに別々の色をつけてみましょう。
+まず展開前のコードからいきます。ここにはただ1つのコンテキストがあります。</p>
+<pre class="rust rust-example-rendered"><span class="synctx-0"><span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">using_a</span> {&#xa;    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {&#xa;        {&#xa;            <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>&#xa;        }&#xa;    }&#xa;}&#xa;&#xa;<span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> <span class="macro">using_a</span><span class="macro">!</span>(<span class="ident">a</span> <span class="op">/</span> <span class="number">10</span>);</span></pre>
+<!--
+Now, let's expand the invocation.
+-->
+<p>さて、マクロ呼び出しを展開しましょう。</p>
+<pre class="rust rust-example-rendered"><span class="synctx-0"><span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> </span><span class="synctx-1">{&#xa;    <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;    </span><span class="synctx-0"><span class="ident">a</span> <span class="op">/</span> <span class="number">10</span></span><span class="synctx-1">&#xa;}</span><span class="synctx-0">;</span></pre>
+<!--
+As you can see, the <code><span class="synctx-1">a</span></code> that's defined by the macro invocation is in a different context to the <code><span class="synctx-0">a</span></code> we provided in our invocation.
+As such, the compiler treats them as completely different identifiers, *even though they have the same lexical appearance*.
+-->
+<p>ご覧の通り、マクロ呼び出しの結果定義された <code><span class="synctx-1">a</span></code> は、呼び出しに使った <code><span class="synctx-0">a</span></code> とは別のコンテキストにあります。
+そのため、<em>字句的な見た目が同じにもかかわらず</em>、コンパイラはそれらを完全に別の識別子として扱います。</p>
+<!--
+This is something to be *really* careful of when working on `macro_rules!` macros, syntax extensions in general even: they can produce ASTs which
+will not compile, but which *will* compile if written out by hand, or dumped using `-Zunpretty=expanded`.
+-->
+<p>これは <code>macro_rules!</code> マクロを扱う際、さらには一般の構文拡張を扱う際に、<em>本当に</em>注意すべきことです。
+同じ見た目の抽象構文木であっても、マクロが出力したものはコンパイルに失敗し、手書きや <code>-Zunpretty=expanded</code>を用いてダンプした結果であればコンパイルに成功する、ということがありうるのです。</p>
+<!--
+The solution to this is to capture the identifier *with the appropriate syntax context*.
+To do that, we need to again adjust our macro syntax.
+To continue with our simpler example:
+-->
+<p>これに対する解決策は、識別子を<em>適切な構文コンテキストにおいて</em>捕捉することです。
+そのためには、再度マクロの構文を調整する必要があります。
+引き続き単純な例で考えます:</p>
+<pre class="rust rust-example-rendered"><span class="synctx-0"><span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">using_a</span> {&#xa;    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {&#xa;        {&#xa;            <span class="kw">let</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">a</span> <span class="op">=</span> <span class="number">42</span>;&#xa;            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">e</span>&#xa;        }&#xa;    }&#xa;}&#xa;&#xa;<span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> <span class="macro">using_a</span><span class="macro">!</span>(<span class="ident">a</span>, <span class="ident">a</span> <span class="op">/</span> <span class="number">10</span>);</span></pre>
+<!--
+This now expands to:
+-->
+<p>これは次のように展開されます:</p>
+<pre class="rust rust-example-rendered"><span class="synctx-0"><span class="kw">let</span> <span class="ident">four</span> <span class="op">=</span> </span><span class="synctx-1">{&#xa;    <span class="kw">let</span> </span><span class="synctx-0"><span class="ident">a</span></span><span class="synctx-1"> <span class="op">=</span> <span class="number">42</span>;&#xa;    </span><span class="synctx-0"><span class="ident">a</span> <span class="op">/</span> <span class="number">10</span></span><span class="synctx-1">&#xa;}</span><span class="synctx-0">;</span></pre>
+<!--
+Now, the contexts match, and the code will compile.
+We can make this adjustment to our `recurrence!` macro by explicitly capturing `a` and `n`.
+After making the necessary changes, we have:
+-->
+<p>今度はコンテキストが一致し、このコードはコンパイルに成功します。
+<code>a</code> と <code>n</code> を明示的に捕捉することで、<code>recurrence!</code> マクロに対してもこの調整を行うことができます。
+必要な変更を加えると、次のようになります:</p>
+<pre><pre class="playground"><code class="language-rust edition2021">macro_rules! count_exprs {
+    () =&gt; (0);
+    ($head:expr) =&gt; (1);
+    ($head:expr, $($tail:expr),*) =&gt; (1 + count_exprs!($($tail),*));
+}
+
+macro_rules! recurrence {
+    ( $seq:ident [ $ind:ident ]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+//    ^~~~~~~~~~   ^~~~~~~~~~ changed
+        {
+            use std::ops::Index;
+
+            const MEM_SIZE: usize = count_exprs!($($inits),+);
+
+            struct Recurrence {
+                mem: [$sty; MEM_SIZE],
+                pos: usize,
+            }
+
+            struct IndexOffset&lt;'a&gt; {
+                slice: &amp;'a [$sty; MEM_SIZE],
+                offset: usize,
+            }
+
+            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+                type Output = $sty;
+
+                #[inline(always)]
+                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b $sty {
+                    use std::num::Wrapping;
+
+                    let index = Wrapping(index);
+                    let offset = Wrapping(self.offset);
+                    let window = Wrapping(MEM_SIZE);
+
+                    let real_index = index - offset + window;
+                    &amp;self.slice[real_index.0]
+                }
+            }
+
+            impl Iterator for Recurrence {
+                type Item = $sty;
+
+                #[inline]
+                fn next(&amp;mut self) -&gt; Option&lt;$sty&gt; {
+                    if self.pos &lt; MEM_SIZE {
+                        let next_val = self.mem[self.pos];
+                        self.pos += 1;
+                        Some(next_val)
+                    } else {
+                        let next_val = {
+                            let $ind = self.pos;
+//                              ^~~~ changed
+                            let $seq = IndexOffset { slice: &amp;self.mem, offset: $ind };
+//                              ^~~~ changed
+                            $recur
+                        };
+
+                        {
+                            use std::mem::swap;
+
+                            let mut swap_tmp = next_val;
+                            for i in (0..MEM_SIZE).rev() {
+                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+                            }
+                        }
+
+                        self.pos += 1;
+                        Some(next_val)
+                    }
+                }
+            }
+
+            Recurrence { mem: [$($inits),+], pos: 0 }
+        }
+    };
+}
+
+fn main() {
+    let fib = recurrence![a[n]: u64 = 0, 1; ...; a[n-2] + a[n-1]];
+
+    for e in fib.take(10) { println!(&quot;{}&quot;, e) }
+}</code></pre></pre>
+<!--
+And it compiles!
+Now, let's try with a different sequence.
+-->
+<p>そしてこれはコンパイルに成功します！
+では、別の数列を試してみましょう。</p>
+<pre><pre class="playground"><code class="language-rust edition2021"><span class="boring">macro_rules! count_exprs {
+</span><span class="boring">    () =&gt; (0);
+</span><span class="boring">    ($head:expr) =&gt; (1);
+</span><span class="boring">    ($head:expr, $($tail:expr),*) =&gt; (1 + count_exprs!($($tail),*));
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">macro_rules! recurrence {
+</span><span class="boring">    ( $seq:ident [ $ind:ident ]: $sty:ty = $($inits:expr),+ ; ... ; $recur:expr ) =&gt; {
+</span><span class="boring">        {
+</span><span class="boring">            use std::ops::Index;
+</span><span class="boring">
+</span><span class="boring">            const MEM_SIZE: usize = count_exprs!($($inits),+);
+</span><span class="boring">
+</span><span class="boring">            struct Recurrence {
+</span><span class="boring">                mem: [$sty; MEM_SIZE],
+</span><span class="boring">                pos: usize,
+</span><span class="boring">            }
+</span><span class="boring">
+</span><span class="boring">            struct IndexOffset&lt;'a&gt; {
+</span><span class="boring">                slice: &amp;'a [$sty; MEM_SIZE],
+</span><span class="boring">                offset: usize,
+</span><span class="boring">            }
+</span><span class="boring">
+</span><span class="boring">            impl&lt;'a&gt; Index&lt;usize&gt; for IndexOffset&lt;'a&gt; {
+</span><span class="boring">                type Output = $sty;
+</span><span class="boring">
+</span><span class="boring">                #[inline(always)]
+</span><span class="boring">                fn index&lt;'b&gt;(&amp;'b self, index: usize) -&gt; &amp;'b $sty {
+</span><span class="boring">                    use std::num::Wrapping;
+</span><span class="boring">
+</span><span class="boring">                    let index = Wrapping(index);
+</span><span class="boring">                    let offset = Wrapping(self.offset);
+</span><span class="boring">                    let window = Wrapping(MEM_SIZE);
+</span><span class="boring">
+</span><span class="boring">                    let real_index = index - offset + window;
+</span><span class="boring">                    &amp;self.slice[real_index.0]
+</span><span class="boring">                }
+</span><span class="boring">            }
+</span><span class="boring">
+</span><span class="boring">            impl Iterator for Recurrence {
+</span><span class="boring">                type Item = $sty;
+</span><span class="boring">
+</span><span class="boring">                #[inline]
+</span><span class="boring">                fn next(&amp;mut self) -&gt; Option&lt;$sty&gt; {
+</span><span class="boring">                    if self.pos &lt; MEM_SIZE {
+</span><span class="boring">                        let next_val = self.mem[self.pos];
+</span><span class="boring">                        self.pos += 1;
+</span><span class="boring">                        Some(next_val)
+</span><span class="boring">                    } else {
+</span><span class="boring">                        let next_val = {
+</span><span class="boring">                            let $ind = self.pos;
+</span><span class="boring">                            let $seq = IndexOffset { slice: &amp;self.mem, offset: $ind };
+</span><span class="boring">                            $recur
+</span><span class="boring">                        };
+</span><span class="boring">
+</span><span class="boring">                        {
+</span><span class="boring">                            use std::mem::swap;
+</span><span class="boring">
+</span><span class="boring">                            let mut swap_tmp = next_val;
+</span><span class="boring">                            for i in (0..MEM_SIZE).rev() {
+</span><span class="boring">                                swap(&amp;mut swap_tmp, &amp;mut self.mem[i]);
+</span><span class="boring">                            }
+</span><span class="boring">                        }
+</span><span class="boring">
+</span><span class="boring">                        self.pos += 1;
+</span><span class="boring">                        Some(next_val)
+</span><span class="boring">                    }
+</span><span class="boring">                }
+</span><span class="boring">            }
+</span><span class="boring">
+</span><span class="boring">            Recurrence { mem: [$($inits),+], pos: 0 }
+</span><span class="boring">        }
+</span><span class="boring">    };
+</span><span class="boring">}
+</span><span class="boring">
+</span><span class="boring">fn main() {
+</span>for e in recurrence!(f[i]: f64 = 1.0; ...; f[i-1] * i as f64).take(10) {
+    println!(&quot;{}&quot;, e)
+}
+<span class="boring">}</span></code></pre></pre>
+<!--
+Which gives us:
+-->
+<p>結果はこうなります:</p>
+<pre><code class="language-text">1
+1
+2
+6
+24
+120
+720
+5040
+40320
+362880
+</code></pre>
+<!--
+Success!
+-->
+<p>成功です！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../decl-macros/macros-methodical.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../decl-macros/minutiae.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../decl-macros/macros-methodical.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../decl-macros/minutiae.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

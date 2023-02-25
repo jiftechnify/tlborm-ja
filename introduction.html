@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html lang="ja" class="sidebar-visible no-js ayu">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>はじめに - Rustマクロの薄い本</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="res/rust-syntax-bg-highlight.css">
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "ayu";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('ayu')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="introduction.html" class="active">はじめに</a></li><li class="chapter-item expanded "><a href="syntax-extensions.html"><strong aria-hidden="true">1.</strong> 構文拡張</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="syntax-extensions/source-analysis.html"><strong aria-hidden="true">1.1.</strong> ソースコード解析</a></li><li class="chapter-item "><a href="syntax-extensions/ast.html"><strong aria-hidden="true">1.2.</strong> ASTにおけるマクロ</a></li><li class="chapter-item "><a href="syntax-extensions/expansion.html"><strong aria-hidden="true">1.3.</strong> 展開</a></li><li class="chapter-item "><a href="syntax-extensions/hygiene.html"><strong aria-hidden="true">1.4.</strong> 衛生性</a></li><li class="chapter-item "><a href="syntax-extensions/debugging.html"><strong aria-hidden="true">1.5.</strong> デバッグ</a></li></ol></li><li class="chapter-item expanded "><a href="decl-macros.html"><strong aria-hidden="true">2.</strong> 宣言的マクロ</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="decl-macros/macros-methodical.html"><strong aria-hidden="true">2.1.</strong> 体系的説明</a></li><li class="chapter-item "><a href="decl-macros/macros-practical.html"><strong aria-hidden="true">2.2.</strong> 実践的説明</a></li><li class="chapter-item "><a href="decl-macros/minutiae.html"><strong aria-hidden="true">2.3.</strong> 枝葉末節</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="decl-macros/minutiae/fragment-specifiers.html"><strong aria-hidden="true">2.3.1.</strong> フラグメント指定子</a></li><li class="chapter-item "><a href="decl-macros/minutiae/metavar-and-expansion.html"><strong aria-hidden="true">2.3.2.</strong> Metavariables and Expansion Redux</a></li><li class="chapter-item "><a href="decl-macros/minutiae/metavar-expr.html"><strong aria-hidden="true">2.3.3.</strong> Metavariable Expressions</a></li><li class="chapter-item "><a href="decl-macros/minutiae/hygiene.html"><strong aria-hidden="true">2.3.4.</strong> Hygiene</a></li><li class="chapter-item "><a href="decl-macros/minutiae/identifiers.html"><strong aria-hidden="true">2.3.5.</strong> Non-Identifier Identifiers</a></li><li class="chapter-item "><a href="decl-macros/minutiae/debugging.html"><strong aria-hidden="true">2.3.6.</strong> Debugging</a></li><li class="chapter-item "><a href="decl-macros/minutiae/scoping.html"><strong aria-hidden="true">2.3.7.</strong> Scoping</a></li><li class="chapter-item "><a href="decl-macros/minutiae/import-export.html"><strong aria-hidden="true">2.3.8.</strong> Import and Export</a></li></ol></li><li class="chapter-item "><a href="decl-macros/patterns.html"><strong aria-hidden="true">2.4.</strong> パターン</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="decl-macros/patterns/callbacks.html"><strong aria-hidden="true">2.4.1.</strong> Callbacks</a></li><li class="chapter-item "><a href="decl-macros/patterns/tt-muncher.html"><strong aria-hidden="true">2.4.2.</strong> Incremental TT Munchers</a></li><li class="chapter-item "><a href="decl-macros/patterns/internal-rules.html"><strong aria-hidden="true">2.4.3.</strong> Internal Rules</a></li><li class="chapter-item "><a href="decl-macros/patterns/push-down-acc.html"><strong aria-hidden="true">2.4.4.</strong> Push-down Accumulation</a></li><li class="chapter-item "><a href="decl-macros/patterns/repetition-replacement.html"><strong aria-hidden="true">2.4.5.</strong> Repetition Replacement</a></li><li class="chapter-item "><a href="decl-macros/patterns/tt-bundling.html"><strong aria-hidden="true">2.4.6.</strong> TT Bundling</a></li></ol></li><li class="chapter-item "><a href="decl-macros/building-blocks.html"><strong aria-hidden="true">2.5.</strong> 構成要素</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="decl-macros/building-blocks/ast-coercion.html"><strong aria-hidden="true">2.5.1.</strong> AST Coercion</a></li><li class="chapter-item "><a href="decl-macros/building-blocks/counting.html"><strong aria-hidden="true">2.5.2.</strong> Counting</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="decl-macros/building-blocks/abacus-counting.html"><strong aria-hidden="true">2.5.2.1.</strong> Abacus Counting</a></li></ol></li><li class="chapter-item "><a href="decl-macros/building-blocks/parsing.html"><strong aria-hidden="true">2.5.3.</strong> Parsing Rust</a></li></ol></li><li class="chapter-item "><a href="decl-macros/macros2.html"><strong aria-hidden="true">2.6.</strong> マクロ2.0</a></li></ol></li><li class="chapter-item expanded "><a href="proc-macros.html"><strong aria-hidden="true">3.</strong> Procedural Macros</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="proc-macros/methodical.html"><strong aria-hidden="true">3.1.</strong> A Methodical Introduction</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="proc-macros/methodical/function-like.html"><strong aria-hidden="true">3.1.1.</strong> Function-like</a></li><li class="chapter-item "><a href="proc-macros/methodical/attr.html"><strong aria-hidden="true">3.1.2.</strong> Attribute</a></li><li class="chapter-item "><a href="proc-macros/methodical/derive.html"><strong aria-hidden="true">3.1.3.</strong> Derive</a></li></ol></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.</strong> A Practical Introduction</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.2.1.</strong> Function-like</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.2.</strong> Attribute</div></li><li class="chapter-item "><div><strong aria-hidden="true">3.2.3.</strong> Derive</div></li></ol></li><li class="chapter-item "><a href="proc-macros/third-party-crates.html"><strong aria-hidden="true">3.3.</strong> Third-Party Crates</a></li><li class="chapter-item "><a href="proc-macros/hygiene.html"><strong aria-hidden="true">3.4.</strong> Hygiene and Spans</a></li><li class="chapter-item "><div><strong aria-hidden="true">3.5.</strong> Techniques</div><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><div><strong aria-hidden="true">3.5.1.</strong> Testing</div></li></ol></li></ol></li><li class="chapter-item expanded "><a href="glossary.html">用語集</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rustマクロの薄い本</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/jiftechnify/tlborm-ja" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="rustマクロの薄い本"><a class="header" href="#rustマクロの薄い本">Rustマクロの薄い本</a></h1>
+<blockquote>
+<p><strong>訳注</strong>: 本書は<a href="https://github.com/veykril/tlborm">The Little Book of Rust Macros</a>(Lukas Wirth氏による改訂版)の非公式日本語訳です🦀🇯🇵</p>
+</blockquote>
+<!--
+> **Note**: This is a continuation of [Daniel Keep's Book](https://github.com/DanielKeep/tlborm) which has not been updated since the early summer of 2016, adapted to make use of [mdBook](https://github.com/rust-lang/mdBook).
+-->
+<blockquote>
+<p><strong>Note</strong>: 翻訳元は<a href="https://github.com/DanielKeep/tlborm">Daniel Keep氏による原著</a>(2016年の中頃より更新停止)を引き継いだもので、<a href="https://github.com/rust-lang/mdBook">mdBook</a>を利用するように改変してあります。</p>
+</blockquote>
+<!--
+View the [rendered version here](https://veykril.github.io/tlborm/) and the [repository here](https://github.com/veykril/tlborm).
+-->
+<p>本書のHTML版は<a href="https://jiftechnify.github.io/tlborm-ja/">こちら</a>から読めます。リポジトリは<a href="https://github.com/jiftechnify/tlborm-ja">こちら</a>にあります。</p>
+<!--
+A chinese version of this book can be found [here](https://zjp-cn.github.io/tlborm/).
+-->
+<p>中国語訳は<a href="https://zjp-cn.github.io/tlborm/">こちら</a>。</p>
+<!--
+This book is an attempt to distill the Rust community's collective knowledge of Rust macros, the `Macros by Example` ones as well as procedural macros(WIP).
+As such, both additions (in the form of pull requests) and requests (in the form of issues) are very much welcome.
+If something's unclear, opens up questions or is not understandable as written down, fear not to make an issue asking for clarification.
+The goal is for this book to become the best learning resource possible.
+-->
+<p>本書の目標は、Rustのマクロ(宣言的マクロ(<code>Macros by Example</code>)と手続き的マクロ(WIP)の両方)に関するRustコミュニティの集合知を蒸留することです。
+ですから、(プルリクエストという形での)内容の追加も(issueという形の)リクエストも大歓迎です。
+もし不明な点があれば、気軽に質問してください。よくわからない記述があれば、わかりやすくしてほしい旨を恐れずissueにぶつけてください。
+本書をできる限り最高の学習資料にするのが目標です。</p>
+<!-- The [original Little Book of Rust Macros](https://github.com/DanielKeep/tlborm) has helped me immensely with understanding ***Macros by Example*** style macros while I was still learning the language.
+Unfortunately, the original book hasn't been updated since April of 2016, while the Rust language as well as its macro-system keeps evolving.
+Which is why I took up the task to update the book and keep it updated as well as I can while also adding newfound things to it.
+In hopes that it will help out all the fresh faces coming to Rust understanding its macro systems, a part of the language a people tend to have trouble with.
+-->
+<p>この本の<a href="https://github.com/DanielKeep/tlborm">原著</a>は、私がRust言語を学んでいた頃に<em><strong>宣言的マクロ</strong></em> (Macros by Example)スタイルのマクロについて理解する大いなる助けになりました。
+残念なことに、原著は2016年4月を最後に更新が途絶えてしまいました。その一方で、Rust言語自体もマクロシステムも進化し続けています。
+そんなわけで私は、原著をアップデートし、最新に保ち、さらには新たな発見を書き加えるという仕事を引き受けたのです。
+Rustに入門する方々がマクロシステムという手こずりがちなRust言語の一機能について理解を深めようとするにあたり、本書が助けになれば幸いです。</p>
+<!--
+> This book expects you to have basic knowledge of Rust, it will not explain language features or constructs that are irrelevant to macros.
+> No prior knowledge of macros is assumed.
+> Having read and understood the first seven chapters of the [Rust Book](https://doc.rust-lang.org/stable/book/) is a must, though having read the majority of the book is recommended.
+-->
+<blockquote>
+<p>本書は読者がRustの基本的な知識を持っていることを仮定して書かれています。マクロに関係ない言語機能や構成要素については説明しません。
+マクロに関する事前知識は不要です。
+<a href="https://doc.rust-lang.org/stable/book/">The Book</a><sup class="footnote-reference"><a href="#the-book-ja">1</a></sup> の7章までを読んで理解しておくのが必須事項です。とはいえ、大部分を読んでおくことをおすすめします。</p>
+</blockquote>
+<div class="footnote-definition" id="the-book-ja"><sup class="footnote-definition-label">1</sup>
+<p><em>訳注</em>: <a href="https://doc.rust-jp.rs/book-ja/title-page.html">日本語版はこちら</a></p>
+</div>
+<!--
+## Thanks
+-->
+<h2 id="謝辞"><a class="header" href="#謝辞">謝辞</a></h2>
+<!--
+A big thank you to Daniel Keep for the original work as well as all the contributors that added to the original which can be found [here](https://github.com/DanielKeep/tlborm).
+-->
+<p>原著の著者であるDaniel Keep氏、および原著へのコントリビューターの皆様(<a href="https://github.com/DanielKeep/tlborm">こちら</a>で確認できる)に深く感謝申し上げます。</p>
+<!--
+## License
+-->
+<h2 id="ライセンス"><a class="header" href="#ライセンス">ライセンス</a></h2>
+<!--
+This work inherits the licenses of the original, hence it is licensed under both the [Creative Commons Attribution-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-sa/4.0/) and the [MIT license](http://opensource.org/licenses/MIT).
+-->
+<p>本書は原著のライセンスを継承します。よって、本書の使用は<a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>と<a href="http://opensource.org/licenses/MIT">MIT license</a>の両方の下で許諾されます<sup class="footnote-reference"><a href="#license-ja">2</a></sup>。</p>
+<div class="footnote-definition" id="license-ja"><sup class="footnote-definition-label">2</sup>
+<p><em>訳注</em>: 日本語版についても同様の扱いとします。詳しくは本プロジェクトのリポジトリの<a href="https://github.com/jiftechnify/tlborm-ja#readme">README</a>をご覧ください。</p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next" href="syntax-extensions.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next" href="syntax-extensions.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
