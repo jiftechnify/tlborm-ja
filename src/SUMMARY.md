@@ -12,7 +12,7 @@
     - [体系的説明](./decl-macros/macros-methodical.md)
     - [実践的説明](./decl-macros/macros-practical.md)
     - [枝葉末節](./decl-macros/minutiae.md)
-        - [Fragment Specifiers](./decl-macros/minutiae/fragment-specifiers.md)
+        - [フラグメント指定子](./decl-macros/minutiae/fragment-specifiers.md)
         - [Metavariables and Expansion Redux](./decl-macros/minutiae/metavar-and-expansion.md)
         - [Metavariable Expressions](./decl-macros/minutiae/metavar-expr.md)
         - [Hygiene](./decl-macros/minutiae/hygiene.md)

@@ -1,9 +1,19 @@
+<!--
 # Fragment Specifiers
+-->
+# フラグメント指定子 (Frangment Specifiers)
 
+<!--
 As mentioned in the [`methodical introduction`](../macros-methodical.md) chapter, Rust, as of 1.60, has 14 fragment specifiers.
 This section will go a bit more into detail for some of them and shows a few example inputs of what each matcher matches.
+-->
+[体系的説明](../macros-methodical.md)の章で触れたように、Rust(1.60時点)には14種類のフラグメント指定子があります。
+本節ではその一部についてもう少し詳しく説明し、各マッチパターンに一致する入力例を示します。
 
+<!--
 > **Note**: Capturing with anything but the `ident`, `lifetime` and `tt` fragments will render the captured AST opaque, making it impossible to further match it with other fragment specifiers in future macro invocations.
+-->
+> **Note**: `ident`, `lifetime`, `tt` 以外のすべてのフラグメントによる捕捉は、抽象構文木を不透明(opaque)にします。これにより、その抽象構文木は後のマクロ呼び出しにおいてそれ以上フラグメント指定子にマッチングしなくなります。
 
 * [`block`](#block)
 * [`expr`](#expr)
@@ -22,7 +32,10 @@ This section will go a bit more into detail for some of them and shows a few exa
 
 ## `block`
 
+<!--
 The `block` fragment solely matches a [block expression](https://doc.rust-lang.org/reference/expressions/block-expr.html), which consists of an opening `{` brace, followed by any number of statements and finally followed by a closing `}` brace.
+-->
+`block` フラグメントは、開き波かっこ `{`・任意の数の文・閉じ波かっこ `}` の並びからなる[ブロック式](https://doc.rust-lang.org/reference/expressions/block-expr.html)のみにマッチします。
 
 ```rust
 macro_rules! blocks {
@@ -41,7 +54,10 @@ blocks! {
 
 ## `expr`
 
+<!--
 The `expr` fragment matches any kind of [expression](https://doc.rust-lang.org/reference/expressions.html) (Rust has a lot of them, given it *is* an expression orientated language).
+-->
+`expr` フラグメントは、任意の種類の[式](https://doc.rust-lang.org/reference/expressions.html)にマッチします (Rustは「式指向(expression oriented)」の言語なので、たくさんの種類の式があります)。
 
 ```rust
 macro_rules! expressions {
@@ -59,7 +75,10 @@ expressions! {
 
 ## `ident`
 
+<!--
 The `ident` fragment matches an [identifier](https://doc.rust-lang.org/reference/identifiers.html) or *keyword*.
+-->
+`ident` フラグメントは、[識別子](https://doc.rust-lang.org/reference/identifiers.html)または*予約語*にマッチします。
 
 ```rust
 macro_rules! idents {
@@ -68,6 +87,7 @@ macro_rules! idents {
 
 idents! {
     // _ <- This is not an ident, it is a pattern
+    // _ <- これは識別子ではなくパターン
     foo
     async
     O_________O
@@ -78,8 +98,12 @@ idents! {
 
 ## `item`
 
+<!--
 The `item` fragment simply matches any of Rust's [item](https://doc.rust-lang.org/reference/items.html) *definitions*, not identifiers that refer to items.
 This includes visibility modifiers.
+-->
+`item` フラグメントは、任意のRustの[アイテム](https://doc.rust-lang.org/reference/items.html)の*定義*のみにマッチし、アイテムを参照する識別子にはマッチしません。
+これには可視性修飾子を含みます。
 
 ```rust
 macro_rules! items {
@@ -100,8 +124,12 @@ items! {
 
 ## `lifetime`
 
+<!--
 The `lifetime` fragment matches a [lifetime or label](https://doc.rust-lang.org/reference/tokens.html#lifetimes-and-loop-labels).
 It's quite similar to [`ident`](#ident) but with a prepended `'`.
+-->
+`lifetime` フラグメントは、[ライフタイムとラベル](https://doc.rust-lang.org/reference/tokens.html#lifetimes-and-loop-labels)にマッチします。
+ライフタイムは、`'` が先頭につくことを除き[`ident`](#ident)と非常に似ています。
 
 ```rust
 macro_rules! lifetimes {
@@ -118,7 +146,11 @@ lifetimes! {
 
 ## `literal`
 
+<!--
 The `literal` fragment matches any [literal expression](https://doc.rust-lang.org/reference/expressions/literal-expr.html).
+-->
+`literal` フラグメントは、任意の[リテラル式](https://doc.rust-lang.org/reference/expressions/literal-expr.html)にマッチします。
+
 
 ```rust
 macro_rules! literals {
@@ -137,10 +169,17 @@ literals! {
 
 ## `meta`
 
+<!--
 The `meta` fragment matches the contents of an [attribute](https://doc.rust-lang.org/reference/attributes.html).
 That is, it will match a simple path, one without generic arguments followed by a delimited token tree or an `=` followed by a literal expression.
+-->
+`meta` フラグメントは、[属性](https://doc.rust-lang.org/reference/attributes.html)の中身にマッチします。
+すなわち、それは単純パス(simple path)と呼ばれるジェネリック引数を持たないパスの後ろに、かっこで括られたトークン木または `=`とリテラル式の並びが続いたものにマッチします
 
+<!--
 > **Note**: You will usually see this fragment being used in a matcher like `#[$meta:meta]` or `#![$meta:meta]` to actually capture an attribute.
+-->
+**Note**: 通常、このフラグメントは、属性を捕捉するための `#[$meta:meta]` または`#![$meta:meta]` といったマッチパターンの中で使われます。
 
 ```rust
 macro_rules! metas {
@@ -156,7 +195,10 @@ metas! {
 # fn main() {}
 ```
 
+<!--
 > **Doc-Comment Fact**: Doc-Comments like `/// ...` and `!// ...` are actually syntax sugar for attributes! They desugar to `#[doc="..."]` and `#![doc="..."]` respectively, meaning you can match on them like with attributes!
+-->
+> **Docコメントの真実**: `/// ...` や `!// ...`のようなDocコメントは、実は属性の構文糖衣なのです！ これらはそれぞれ `#[doc="..."]` や `#![doc="..."]` という形に脱糖されます。これは、これらを属性と同様にマッチングできるということです！
 
 ## `pat`
 
